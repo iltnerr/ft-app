@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Fourier Transform Tutorial 4</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width">
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script> <!-- plotly-->
+<script src="https://unpkg.com/function-plot/dist/function-plot.js"></script> <!-- plot math functions-->
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script> <!-- latex style math notation-->
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="https://unpkg.com/mathjs/lib/browser/math.js"></script> <!-- math library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- icon library -->
+<style>
+#logoBG{
+  width:99%;
+  height:40px;
+  background: #edede8ff;
+  position: absolute;
+  top: 0.5%;
+}
+
+.logo {
+  display: block;
+  position: absolute;
+  margin-left: 50%;
+  margin-right: 50%;
+  top: 0.5%;
+  transform: translateX(-50%); /*use center anchor point along x axis*/
+  z-index: 1;
+}
+
+h2 {
+  margin-bottom: 0;
+}
+
+h4 {
+  margin-bottom: 0;
+}
+
+#chapter-container{
+  width: 98vw;
+  margin-bottom: 20px;
+  padding-top: 80px;
+  position: relative;
+}
+
+#chapter {
+  float: left;
+  max-width: 70vw;
+  margin-right: 50px;
+  margin-bottom: 30px;
+}
+
+#cont {
+  float: left;
+  position: relative;
+}
+
+.tooltip {
+  font-size: 50px;
+  cursor: pointer;
+  
+  position: absolute;
+  left: 0%;
+  bottom: 0%;
+  /*positioning is handled via JS */
+  
+  /* make tooltip non-selectable*/
+  -webkit-touch-callout: none;
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none; 
+            user-select: none; 
+}
+
+.tooltiptext {
+  font-size: 20px;
+  width: 60vw;
+  background-color: #555;
+  color: #fff;
+  text-align: justify;
+  border-radius: 6px;
+  padding: 10px 10px;
+  
+  position: absolute;
+  z-index: 2;
+  
+  left: 50%;
+  /*positioning (translation) is handled via JS */
+
+  opacity: 0;
+  display: none;
+  transition: opacity 0.3s;
+}
+
+#header-container {
+  width: 60vw;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 30px;
+  padding-left: 18vw;
+  padding-right: 18vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+button {
+  width: 40px;
+  height: 80px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+button.active {
+  border: 3px solid #1c33c7ff;
+}
+
+.sliderText {
+  width: 100%;
+  text-align: center;
+}
+
+#content-container {
+  height: 65vh;
+  width: 100%; 
+}
+
+.column{
+  float: left;
+  width: 50%;
+}
+
+.header {
+  font-size: 25px;
+  text-align: center;
+  display: inline-block;
+  margin-left: 50px;
+  margin-right: 50px;  
+  margin-bottom: 5px;
+}
+
+.bordered-header {
+  padding: 3px;
+  border: 3px solid;
+}
+
+/*-----graph settings-----*/
+.plot {
+  position: relative;
+}
+
+.graph_label {
+  position: absolute;
+  right: 5%;
+  top: 15%;
+  z-index: 1;
+  background-color: white;
+  border: solid 1px;
+  width: 165px;
+  text-align: center;
+  padding: 2px;
+}
+
+.graph_annotation {
+  position: absolute;
+  left: 10%;
+  bottom: 25%;
+  z-index: 1;
+  background-color: #d6d5d5;
+  width: 140px;
+  text-align: left;
+  padding-left: 3px;
+}
+
+/*-----frequency slider-----*/
+#slider-container {
+  padding-top: 10px;
+  width: 33%;
+  margin: auto;
+}
+
+input.range {
+  -webkit-appearance: none;
+  bottom: -10px;
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+input.range:focus {
+  outline: 0;
+}
+input.range::-moz-focus-outer {
+  border: 0;
+}
+
+input.range::-webkit-slider-thumb {
+  box-shadow: 1px 1px 1px black, 0px 0px 1px black;
+  border: 0;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -7.5px;
+}
+ 
+input.range::-moz-range-thumb {
+  box-shadow: 1px 1px 1px black, 0px 0px 1px black;
+  border: 0;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+}
+input.range::-ms-thumb {
+  box-shadow: 1px 1px 1px black, 0px 0px 1px black;
+  border: 0;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+  height: 5px;
+}
+
+input.range::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 5px;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0), 0px 0px 1px rgba(13, 13, 13, 0);
+  background: grey;
+  border-radius: 20px;
+  border: 0;
+}
+ 
+input.range::-moz-range-track {
+  width: 100%;
+  height: 5px;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0), 0px 0px 1px rgba(13, 13, 13, 0);
+  background: grey;
+  border-radius: 20px;
+  border: 0;
+}
+ 
+input.range::-ms-track {
+  width: 100%;
+  height: 5px;
+  cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+
+input.range::-ms-fill-lower,
+input.range::-ms-fill-upper {
+  background: grey;
+  border: 0;
+  border-radius: 40px;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0), 0px 0px 1px rgba(13, 13, 13, 0);
+}
+
+.range__tick {
+  fill: #a0a0a0;
+}
+
+.range__tick:first-child {
+  -webkit-transform: translateX(2px);
+  -moz-transform: translateX(2px);
+  -ms-transform: translateX(2px);
+  -o-transform: translateX(2px);
+  transform: translateX(2px);
+}
+.range__tick:last-child {
+  -webkit-transform: translateX(-3px);
+  -moz-transform: translateX(-3px);
+  -ms-transform: translateX(-3px);
+  -o-transform: translateX(-3px);
+  transform: translateX(-3px);
+}
+
+.range__field {
+  border: 0;
+}
+
+/*-----pagination-----*/
+.center {
+  text-align: center;
+  padding-top: 50px;
+  padding-bottom: 25px;
+}
+  
+.pagination {
+  display: inline-block;
+}
+
+.pagination a {
+  color: black;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+.pagination a.active {
+  background-color: #1c33c7ff;
+  color: white;
+}
+
+.pagination a:hover:not(.active) {
+background-color: #ddd;
+}
+</style>
+</head>
+<body>
+
+<div id="logoBG">
+  <a href="../index.html"><img src="../img/getlab-logo.png" alt="GETLab-Logo" class="logo"></a>
+</div>
+
+<div id="chapter-container">
+    <div id="chapter">
+        <h1>Tutorial 4: Sinusoidal Wave and the Dirac Delta</h1>
+        <h2>Constructing a Dirac Delta Function for a 1 Hz Cosine Signal.</h2>
+    </div>
+
+    <div id="cont">
+      <div class="tooltip" onclick="ToggleDescription()">&#x1F4A1;</div>
+    </div>
+    
+    <span class="tooltiptext">
+        We start with a 1 Hz cosine signal: \(f(x)=\cos(2\pi\beta x)\) where \(\beta = 1\,\mathrm{Hz}\). 
+        <br>
+        In order to obtain the Fourier transform for this signal, the product \(\cos(2\pi x)\cdot e^{-j\,2\pi ux}\) has to be integrated from \(-\infty\) to \(+\infty\). To visualize this, the left side shows \(f(x)\) and the corresponding cosine and sine function regarding \(e^{-j\,2\pi ux}\). The right side depicts the result of multiplying \(f(x)\) by \(e^{-j\,2\pi ux}\) as well as the real part of the Fourier transform \(F(u)_{\mathrm{real}}\). Since the cosine function is even, the area under the red curve is always zero and the Fourier transform has no imaginary part.
+        <br><br>
+        In the following we will focus on the integration which corresponds to determining the area under the curves on the right side. For now, we start by integrating from -1 to +1 (make sure that the correct button is selected). As you move the frequency slider, you may notice that the area under the blue curve is mostly close to zero, except for the case when the frequency \(u\) approaches the signal frequency \(\beta\) of 1 Hz (and -1 Hz!).
+        <br>
+        This may also be observed in the graph of \(F(u)_{\mathrm{real}}\): As the two signals, \(f(x)\) and the cosine on the left, become aligned with \(u\) approaching \(\pm\beta\), we may observe rapid peaks for \(u=\pm\) 1 Hz in the Fourier transform plot. 
+        <br><br>
+        The value of \(F(u)_{\mathrm{real}}\) represents the area under the blue curve and is therefore depending on the integration limits. It is important to understand this for two reasons: 
+        <ol>
+          <li>We have to integrate over <b>infinity</b>.</li>
+          <li>Sinusoidal waves are periodic signals that go on <b>forever</b> (in theory).</li>
+        </ol>
+        To study the integration, you may increase the integration limits successively with the provided buttons. As you change the limits, focus on the Fourier transform and the area under the blue curve. 
+        <br>
+        As the integration limits approach infinity (-50 and +50 is sufficient for viewing purposes), it becomes clear that the area must <b>always</b> be zero (the areas on the positive and negative side cancel each other for infinite signals), except for the case when the frequencies match <b>exactly</b>. Then, the area approaches infinity.
+        <br><br>
+        To summarize, only for \(u=\pm\beta\) the Fourier transform is non-zero. In fact, it is an infinitely thin spike with infinite height. This is also known as the Dirac delta function or the <i>unit impulse</i>.
+    </span>
+</div>
+
+<div id="header-container">
+  
+  <div class="header">
+    \(F(u)=\displaystyle\int\limits_{-\infty}^{\infty} \cos(2\pi x)\,e^{-j\,2\pi ux}\,\mathrm{d}x\)
+  </div>
+  
+  <button class="active" id="b1" type="button" onclick="selectFunction('1')">\(\displaystyle\int\limits_{-1}^{1}\)</button>
+  <button type="button" id="b2" onclick="selectFunction('2')">\(\displaystyle\int\limits_{-2}^{2}\)</button>
+  <button type="button" id="b5" onclick="selectFunction('5')">\(\displaystyle\int\limits_{-5}^{5}\)</button>
+  <button type="button" id="b50" onclick="selectFunction('50')">\(\displaystyle\int\limits_{-50}^{50}\)</button>
+</div>
+
+<div id="content-container">
+  <div class="column">
+	<div class="plot" id="graph_signal"><!-- graph will be drawn inside this DIV -->
+	  <span class="graph_label" style="width:70px;">\(f(x)\)</span>
+	</div>
+	
+	<div class="plot" id="graph_rp"><!-- graph will be drawn inside this DIV -->
+	</div>
+	
+	<div class="plot" id="graph_ip"><!-- graph will be drawn inside this DIV -->
+	</div>
+
+  </div>
+  
+  <div class="column">   
+    <div class="plot" id="graph_ft_real"><!-- graph will be drawn inside this DIV -->
+      <span class="graph_annotation">\(F\)<span id="ftValues"></span></span>
+      <span class="graph_label">\(F(u)_{real} \text{  vs. frequency}\)</span>
+    </div>
+    
+    <div class="plot" id="graph_rp_area"><!-- graph will be drawn inside this DIV -->
+      <span class="graph_annotation">Area = <span id="areaRP"></span></span>
+      <span class="graph_label">\(\displaystyle \int f(x)\cdot \cos(2\pi\,ux)\,\mathrm{d}x\)</span>
+    </div>
+    
+    <div class="plot" id="graph_ip_area"><!-- graph will be drawn inside this DIV -->
+      <span class="graph_annotation">Area = 0.00<span id="areaIP"></span></span>
+      <span class="graph_label">\(\displaystyle \int f(x)\cdot j\sin(2\pi\,ux)\,\mathrm{d}x\)</span>
+    </div>
+  </div>
+</div>
+  
+    <div id="slider-container">
+        <fieldset class="range__field">
+        <div class="sliderText">Frequency<br>\(u=\) <span id="freq-value"></span></div>
+        <input class="range" type="range" min="-16" max="16" value="3" step="any" id="frequency-slider" list="snap">
+        <svg role="presentation" width="100%" height="10">
+            <rect class="range__tick" x="0%" y="3" width="1" height="10"></rect>
+            <rect class="range__tick" x="25%" y="3" width="1" height="10"></rect>
+            <rect class="range__tick" x="50%" y="3" width="1" height="10"></rect>
+            <rect class="range__tick" x="75%" y="3" width="1" height="10"></rect>
+            <rect class="range__tick" x="100%" y="3" width="1" height="10"></rect>
+        </svg>
+        <svg role="presentation" width="100%" height="14">
+            <text class="range__point" x="0%" y="14" text-anchor="start">-16 Hz</text>
+            <text class="range__point" x="25%" y="14" text-anchor="middle">-8 Hz</text>
+            <text class="range__point" x="50%" y="14" text-anchor="middle">0 Hz</text>
+            <text class="range__point" x="75%" y="14" text-anchor="middle">8 Hz</text>
+            <text class="range__point" x="100%" y="14" text-anchor="end">16 Hz</text>
+        </svg>
+        </fieldset>
+        
+        <datalist id="snap">
+          <option value="-1">
+          <option value="1">
+        </datalist>
+    </div>
+
+<div class="center">
+  <div class="pagination">
+    <a href="../index.html"><i class="fa fa-home"></i></a>
+    <a href="index.html">&laquo;</a>
+    <a href="index.html">1</a>
+    <a class="active" href="#">2</a>
+    <a href="p3.html">3</a>
+    <a href="p4.html">4</a>
+    <a href="p3.html">&raquo;</a>
+  </div>
+</div>
+
+<script>
+// set height of tooltip container to height of chapter. 
+var tooltipcont = document.getElementById("cont");
+var chHeight = document.getElementById("chapter").clientHeight;
+tooltipcont.style.height = chHeight-5 + "px";
+
+// move tooltiptext down by chapter height
+var tooltiptext = document.getElementsByClassName("tooltiptext")[0];
+tooltiptext.style.transform = `translate(-30vw, ${chHeight+10}px)`;
+
+// html elements
+var tooltip = document.getElementsByClassName("tooltip")[0];
+var slider = document.getElementById("frequency-slider");
+var areaRPhtml = document.getElementById("areaRP");
+var ftValueshtml = document.getElementById("ftValues");
+var freqValuehtml = document.getElementById("freq-value");
+
+// variables
+var lowerLimit = -1;
+var higherLimit = 1;
+var resolution = 0.01;
+var u = slider.value // initial value for u (frequency)
+var areaRP;
+
+// slider stats
+var sliderCurrent, sliderMax, sliderMin;
+initSliderStats();
+
+// graph settings + initial plots --------------------------------------------------
+const [layout, config] = plotlyOptions() 
+const layoutFT = JSON.parse(JSON.stringify(layout));
+const layoutIM = JSON.parse(JSON.stringify(layout));
+
+layoutIM.yaxis.ticktext = ['-j', '0', 'j'];
+layoutFT.xaxis.range = [-16, 16];
+layoutFT.xaxis.tickvals = [-16, -8, 0, 8, 16];
+layoutFT.xaxis.ticktext = ["-16\u00B72\u03C0", "-8\u00B72\u03C0", 0, "8\u00B72\u03C0", "16\u00B72\u03C0"];
+layoutFT.yaxis.range = [-1, 1];
+
+// Generate values
+var currentValues = new Array(1+((2*16)/resolution)); // array size = 1+(range/resolution)
+var [dataSignal, dataRP, dataIP, dataRPA, dataIPA, dataFTRP, yValsFTRP] = generateData();
+var yValsRP, yValsIP, yValsRPAinf, yValsIPAinf, yValsRPA, yValsIPA; // y values to update plots
+
+// dynamic text
+updateHTML();
+
+drawGraphs();
+
+// update visuals according to frequency slider
+slider.oninput = function() {
+  u = this.value; // THIS IS A STRING
+
+  updateSliderStats();
+  
+  [yValsRP, yValsIP, yValsRPAinf, yValsIPAinf, yValsRPA, yValsIPA] = updateData();
+  
+  updateGraphs();
+  drawFunction();
+}
+
+// functions --------------------------------------------------
+function ToggleDescription() {
+  if (tooltiptext.style.opacity == 1)
+    {
+    tooltiptext.style.opacity = 0;
+    tooltiptext.style.display = "none";
+    //tooltip.classList.remove("active");
+    }
+  else
+    {
+    tooltiptext.style.display = "block";
+    tooltiptext.style.opacity = 1;
+    //tooltip.classList.add("active");
+    }
+  return
+}
+
+function drawGraphs() {
+  Plotly.newPlot("graph_signal", dataSignal, layout, config);
+  Plotly.newPlot("graph_rp", dataRP, layout, config);
+  Plotly.newPlot("graph_ip", dataIP, layoutIM, config);
+  Plotly.newPlot("graph_rp_area", dataRPA, layout, config);
+  Plotly.newPlot("graph_ip_area", dataIPA, layoutIM, config);
+  Plotly.newPlot("graph_ft_real", dataFTRP, layoutFT, config);
+}
+
+function updateGraphs() {  
+  // change graph data based on slider value
+  
+  Plotly.restyle('graph_rp', 'y', [yValsRP]);
+  Plotly.restyle('graph_ip', 'y', [yValsIP]);
+  Plotly.restyle('graph_rp_area', 'y', [yValsRPA], 0);
+  Plotly.restyle('graph_ip_area', 'y', [yValsIPA], 0);
+  Plotly.restyle('graph_rp_area', 'y', [yValsRPAinf], 1);
+  Plotly.restyle('graph_ip_area', 'y', [yValsIPAinf], 1);
+
+  updateMarker("graph_ft_real", yValsFTRP);
+  
+  areaRP = yValsFTRP[sliderCurrent].toFixed(2);
+  
+  // dynamic text
+  updateHTML();
+}
+
+function initSliderStats() {
+  sliderCurrent = Math.round(((parseFloat(u)+16)/resolution + Number.EPSILON));
+  sliderMax = (parseFloat(u)+16)/resolution; // index for starting position (u = 1): (u+16)/resolution
+  sliderMin = (parseFloat(u)+16)/resolution;
+}
+
+function updateSliderStats() {
+  sliderCurrent = Math.round(((parseFloat(u)+16)/resolution + Number.EPSILON));   
+  sliderMax = Math.max(sliderCurrent, sliderMax);
+  sliderMin = Math.min(sliderCurrent, sliderMin);
+}
+
+function updateMarker(domID, dataArray) {
+// update marker positions
+  let upd = {
+    'x': [[parseFloat(u)]],
+    'y': [[dataArray[sliderCurrent]]]
+  };
+  
+  // update plot
+  Plotly.restyle(domID, upd, 1);
+}
+
+function drawFunction() {
+  // dynamically draw graph as the slider is being moved
+  
+  // replace initial array with function values for the slider range of sliderMax-sliderMin
+  currentValues.splice(sliderMin, sliderMax-sliderMin+1, ...yValsFTRP.slice(sliderMin, sliderMax));
+  
+  // update plot
+  Plotly.restyle('graph_ft_real', 'y', [currentValues], 0);
+}
+
+function selectFunction(limit) {
+ 
+  // change active button
+  btns = document.getElementsByTagName("button");
+  
+  for (var i = 0; i < btns.length; i++) { 
+  btns[i].classList.remove("active");
+  }
+  
+  document.getElementById("b" + limit).classList.add("active");  
+  
+  // reset ft plot
+  clearPlots();
+  initSliderStats();
+  
+  // set new limits
+  lowerLimit = - parseInt(limit);
+  higherLimit = parseInt(limit);
+  
+  // adjust y-axis
+  if (higherLimit > 5) {  
+    layoutFT.yaxis.range = [0, higherLimit];
+    layoutFT.yaxis.tickvals = [0, higherLimit];
+  }
+  else {
+    layoutFT.yaxis.range = [-1, higherLimit];
+    layoutFT.yaxis.tickvals = [-1, 0, higherLimit];
+  }
+      
+  // generate data for the chosen function
+  [dataSignal, dataRP, dataIP, dataRPA, dataIPA, dataFTRP, yValsFTRP] = generateData();
+  
+  updateMarker("graph_ft_real", yValsFTRP);
+  
+  updateHTML();
+  
+  Plotly.newPlot("graph_rp_area", dataRPA, layout, config);
+  Plotly.newPlot("graph_ip_area", dataIPA, layoutIM, config);
+}
+
+function updateHTML() {
+  areaRP = yValsFTRP[sliderCurrent].toFixed(2);
+  freqValuehtml.innerHTML = parseFloat(u).toFixed(2) + ' Hz';
+  areaRPhtml.innerHTML = areaRP;
+  ftValueshtml.innerHTML = `(${parseFloat(u).toFixed(2)}\u00B72\u03C0) = ${areaRP}`; 
+}
+
+function clearPlots() {
+  
+  // re-init currentValues
+  currentValues = new Array(1+((2*16)/resolution));
+    
+  Plotly.restyle("graph_ft_real", 'y', [currentValues], 0);
+}
+
+function plotlyOptions() {
+  let col = '#ebebeb';
+
+  let L = {
+  width: document.getElementById("content-container").clientWidth/2,
+  height: document.getElementById("content-container").clientHeight/3,
+  margin: {
+    l: 30,
+    r: 30,
+    b: 20,
+    t: 20,
+    pad: 0
+  },
+  xaxis: {
+    range: [-5, 5],
+    mirror: true,
+    
+    linecolor: col,
+    showline: true,
+    linewidth: 1,  
+    
+    zeroline: true,
+    zerolinewidth: 1,
+    zerolinecolor: col,
+    
+    showgrid: true,
+    gridwidth: 1,
+    gridcolor: col
+  },
+  yaxis: {
+    range: [-1, 1],
+    mirror: true,
+    tickvals: [-1, 0, 1],
+    
+    linecolor: col,
+    showline: true,
+    linewidth: 1,  
+    
+    zeroline: true,
+    zerolinewidth: 1,
+    zerolinecolor: col,
+    
+    showgrid: true,
+    gridwidth: 1,
+    gridcolor: col
+  },
+    showlegend: false
+    }
+  
+  let conf = {
+  staticPlot: true
+  }
+  return [L, conf]
+}
+
+function mathFuncRP(x) {
+  return Math.cos(-2 * Math.PI * u * x)
+}
+
+function mathFuncIP(x) {
+  return Math.sin(-2 * Math.PI * u * x)
+}
+
+function inputFunction(x) {
+  return Math.cos(2 * Math.PI * x)
+}
+
+function ftRP(u) {
+/*
+calculate the real part of the FT of the input signal. 
+this is done by calculating the area under the RP curve over the frequency domain (u).
+*/
+  let total = 0
+  let step
+  
+  step = step || 0.01
+  let f = function (x) {return Math.cos(-2 * Math.PI * u * x)*inputFunction(x)};
+  
+  // integrate
+  for (let x = lowerLimit; x < higherLimit; x += step) {
+    total += f(x + step / 2) * step
+  }
+  return total
+}
+
+function generateData() {
+// generate arrays used to plot functions with plotly
+  
+  // time signals
+  let xValuesinf = [];
+  let xValues = [];
+  let yValuesInput = [];
+  let yValuesRP = [];
+  let yValuesIP = [];
+  let yValuesRPA = [];  
+  let yValuesIPA = []; 
+  let yValuesRPAinf = [];
+  let yValuesIPAinf = [];
+  
+  let yInput, yRP, yIP, yRPA, yIPA;
+  
+  // FT
+  let rp;
+  let uValues = [];
+  let yValuesFTRP = [];
+  
+  // calculate time signals
+  for (let x = -5; x <= 5; x += resolution) {
+    xValuesinf.push(x);
+    
+    yInput = inputFunction(x);
+    yRP = mathFuncRP(x);
+    yIP = mathFuncIP(x);
+    yRPA = yInput*yRP;
+    yIPA = yInput*yIP;
+    
+    yValuesInput.push(yInput)
+    yValuesRP.push(yRP);
+    yValuesIP.push(yIP);
+    yValuesRPAinf.push(yRPA);
+    yValuesIPAinf.push(yIPA);
+    
+    if (Math.abs(x) <= higherLimit) {
+      xValues.push(x);
+      yValuesRPA.push(yRPA);
+      yValuesIPA.push(yIPA);
+    }     
+    
+  }
+  
+  // calculate fourier transform
+  for (let fr = -16; fr <= 16; fr += resolution) {   
+    uValues.push(fr);
+    rp = ftRP(fr);
+    yValuesFTRP.push(rp);
+  }
+  
+  // prepare data for plotly
+  
+  // lines
+  traceInput = {x:xValuesinf, y:yValuesInput, mode:"lines", line: {color: "black"}};
+  traceRP = {x:xValuesinf, y:yValuesRP, mode:"lines", line: {color: "blue"}};
+  traceIP = {x:xValuesinf, y:yValuesIP, mode:"lines", line: {color: "red"}};
+  traceRPA = {x:xValues, y:yValuesRPA, mode:"lines", fill: "tozeroy", line: {color: "blue"}};
+  traceIPA = {x:xValues, y:yValuesIPA, mode:"lines", fill: "tozeroy", line: {color: "red"}};
+  traceRPAinf = {x:xValuesinf, y:yValuesRPAinf, mode:"lines", line: {color: "blue"}};
+  traceIPAinf = {x:xValuesinf, y:yValuesIPAinf, mode:"lines", line: {color: "red"}};
+  trace1FTRP = {x:uValues, y:currentValues, mode:"lines"};
+  
+  // marker
+  trace2FTRP = {x:[uValues[sliderCurrent]], y:[yValuesFTRP[sliderCurrent]], mode:"markers", marker:{color: 'red', size:10, opacity:0.8}};
+  
+  dataInput = [traceInput];
+  dataRP = [traceRP];
+  dataIP = [traceIP];
+  dataRPA = [traceRPA, traceRPAinf];
+  dataIPA = [traceIPA, traceIPAinf];
+  dataFTRP = [trace1FTRP, trace2FTRP];
+  
+  return [dataInput, dataRP, dataIP, dataRPA, dataIPA, dataFTRP, yValuesFTRP]
+}
+
+function updateData() {
+// update arrays used to plot functions with plotly
+
+  let yValuesInput = [];
+  let yValuesRP = [];
+  let yValuesIP = [];
+  let yValuesRPA = [];  
+  let yValuesIPA = []; 
+  let yValuesRPAinf = [];  
+  let yValuesIPAinf = []; 
+  let yInput, yRP, yIP, yRPA, yIPA;
+  
+  // calculate input signal
+  for (let x = -5; x <= 5; x += resolution) {   
+    yInput = inputFunction(x);
+    yRP = mathFuncRP(x);
+    yIP = mathFuncIP(x);
+    yRPA = yInput*yRP;
+    yIPA = yInput*yIP;
+    
+    yValuesInput.push(yInput)
+    yValuesRP.push(yRP);
+    yValuesIP.push(yIP);
+    yValuesRPAinf.push(yRPA);
+    yValuesIPAinf.push(yIPA);
+    
+    if (Math.abs(x) <= higherLimit) {
+      yValuesRPA.push(yRPA);
+      yValuesIPA.push(yIPA);
+    } 
+
+  }
+    
+  return [yValuesRP, yValuesIP, yValuesRPAinf, yValuesIPAinf, yValuesRPA, yValuesIPA]
+}
+</script>
+
+</body>
+</html>
+

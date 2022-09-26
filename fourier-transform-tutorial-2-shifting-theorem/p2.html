@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Fourier Transform Tutorial 2</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width">
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script> <!-- plotly-->
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script> <!-- latex style math notation-->
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="https://unpkg.com/mathjs/lib/browser/math.js"></script> <!-- math library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- icon library -->
+<style>
+#logoBG{
+  width:99%;
+  height:40px;
+  background: #edede8ff;
+  position: absolute;
+  top: 0.5%;
+}
+
+.logo {
+  display: block;
+  position: absolute;
+  margin-left: 50%;
+  margin-right: 50%;
+  top: 0.5%;
+  transform: translateX(-50%); /*use center anchor point along x axis*/
+  z-index: 1;
+}
+
+h2 {
+  margin-bottom: 0;
+}
+
+#chapter-container{
+  width: 100vw;
+  margin-bottom: 20px;
+  padding-top: 80px;
+  position: relative;
+}
+
+#chapter {
+  float: left;
+  max-width: 70vw;
+  margin-right: 50px;
+  margin-bottom: 30px;
+}
+
+#cont {
+  float: left;
+  position: relative;
+}
+
+.tooltip {
+  font-size: 50px;
+  cursor: pointer;
+  
+  position: absolute;
+  left: 0%;
+  bottom: 0%;
+  /*positioning is handled via JS */
+  
+  /* make tooltip non-selectable*/
+  -webkit-touch-callout: none;
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none; 
+            user-select: none; 
+}
+
+.tooltiptext {
+  font-size: 20px;
+  width: 60vw;
+  background-color: #555;
+  color: #fff;
+  text-align: justify;
+  border-radius: 6px;
+  padding: 10px 10px;
+  
+  position: absolute;
+  z-index: 2;
+  
+  left: 50%;
+  /*positioning (translation) is handled via JS */
+
+  opacity: 0;
+  display: none;
+  transition: opacity 0.3s;
+}
+
+#header {
+  width: 60vw;
+  min-width: 500px;
+  max-width: 1000px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 30px;
+  padding-left: 20vw;
+  padding-right: 20vw;
+}
+
+#shift-container {
+  width: 26%;
+  margin-left: 12.5%;
+}
+
+.sliderText {
+  width: 100%;
+  text-align: center;
+}
+
+#content-container {
+  height: 65vh;
+  width: 100%; 
+}
+
+.header {
+  font-size: 25px;
+  text-align: center;
+  display: inline-block;
+  margin-left: 50px;
+  margin-right: 50px;  
+  margin-bottom: 5px;
+}
+
+.bordered-header {
+  padding: 3px;
+  border: 3px solid;
+}
+
+.column {
+  float: left;
+  width: 50%;
+}
+
+/*-----graph settings-----*/
+text.top-right-legend {
+  display: none;
+}
+
+g.tip {
+  display: none;
+}
+
+.plot {
+  position: relative;
+}
+
+.graph_annotation {
+  position: absolute;
+  left: 10%;
+  bottom: 25%;
+  z-index: 1;
+  background-color: #d6d5d5;
+  width: 180px;
+  text-align: left;
+  padding-left: 3px;
+}
+
+.graph_label {
+  position: absolute;
+  right: 5%;
+  top: 15%;
+  z-index: 1;
+  background-color: white;
+  border: solid 1px;
+  width: 140px;
+  text-align: center;
+  padding: 2px;
+}
+
+/*-----frequency slider-----*/
+#slider-container {
+  padding-top: 10px;
+  width: 33%;
+  margin: auto;
+}
+
+input.range {
+  -webkit-appearance: none;
+  bottom: -10px;
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+input.range:focus {
+  outline: 0;
+}
+input.range::-moz-focus-outer {
+  border: 0;
+}
+
+input.range::-webkit-slider-thumb {
+  box-shadow: 1px 1px 1px black, 0px 0px 1px black;
+  border: 0;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -7.5px;
+}
+ 
+input.range::-moz-range-thumb {
+  box-shadow: 1px 1px 1px black, 0px 0px 1px black;
+  border: 0;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+}
+input.range::-ms-thumb {
+  box-shadow: 1px 1px 1px black, 0px 0px 1px black;
+  border: 0;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+  height: 5px;
+}
+
+input.range::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 5px;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0), 0px 0px 1px rgba(13, 13, 13, 0);
+  background: grey;
+  border-radius: 20px;
+  border: 0;
+}
+ 
+input.range::-moz-range-track {
+  width: 100%;
+  height: 5px;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0), 0px 0px 1px rgba(13, 13, 13, 0);
+  background: grey;
+  border-radius: 20px;
+  border: 0;
+}
+ 
+input.range::-ms-track {
+  width: 100%;
+  height: 5px;
+  cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+
+input.range::-ms-fill-lower,
+input.range::-ms-fill-upper {
+  background: grey;
+  border: 0;
+  border-radius: 40px;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0), 0px 0px 1px rgba(13, 13, 13, 0);
+}
+
+.range__tick {
+  fill: #a0a0a0;
+}
+
+.range__tick:first-child {
+  -webkit-transform: translateX(2px);
+  -moz-transform: translateX(2px);
+  -ms-transform: translateX(2px);
+  -o-transform: translateX(2px);
+  transform: translateX(2px);
+}
+.range__tick:last-child {
+  -webkit-transform: translateX(-3px);
+  -moz-transform: translateX(-3px);
+  -ms-transform: translateX(-3px);
+  -o-transform: translateX(-3px);
+  transform: translateX(-3px);
+}
+
+.range__field {
+  border: 0;
+}
+
+/*-----pagination-----*/
+.center {
+  text-align: center;
+  padding-top: 50px;
+  padding-bottom: 25px;
+}
+  
+.pagination {
+  display: inline-block;
+}
+
+.pagination a {
+  color: black;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+.pagination a.active {
+  background-color: #1c33c7ff;
+  color: white;
+}
+
+.pagination a:hover:not(.active) {
+background-color: #ddd;
+}
+</style>
+</head>
+<body>
+
+<div id="logoBG">
+  <a href="../index.html"><img src="../img/getlab-logo.png" alt="GETLab-Logo" class="logo"></a>
+</div>
+
+<div id="chapter-container">
+    <div id="chapter">
+        <h1>Tutorial 2: Shifting Theorem</h1>
+        <h2>Shifting a Function Corresponds to a Multiplication of the Original Fourier Transform by a Cosine and a Sine Function in the Frequency Domain.</h2>
+    </div>
+
+    <div id="cont">
+      <div class="tooltip" onclick="ToggleDescription()">&#x1F4A1;</div>
+    </div>
+    
+    <span class="tooltiptext">
+    According to the shifting theorem, if the Fourier transform \(F(u)\) of a function \(f(x)\) is known, the Fourier transform of the shifted function \(f(x-x_0)\) can be obtained by multiplying \(F(u)\) by \(e^{-j\,2\pi ux_0}\). This means multiplication by a real cosine and an imaginary sine term which depend on the amount of the shift \(x_0\). 
+    <br><br>
+    The left side shows \(f(x-x_0)\) and the corresponding cosine and sine function regarding the shifting theorem, \(\cos(-2\pi u x_0)\) and \(j\sin(-2\pi u x_0)\). They should not be confused with the cosine and the sine component of \(e^{-j\,2\pi ux}\) which appears in the definition of the Fourier transform. Also, note that in this case the cosine and the sine function are depicted in the <b>frequency domain</b> because they are multiplied with \(F(u)\) as opposed to the ones before where we multiplied \(f(x)\) by a cosine and sine function in the <b>spatial domain</b>.
+    <br><br>    
+    In order to visualize the shifting theorem, the top graph on the right shows the Fourier transform of the rectangular function \(f(x)\) without a spatial shift. As you shift \(f(x)\), you may compare the Fourier transform for the shifted rectangular function with the original one. The more \(f(x)\) is shifted, the better the multiplication with the cosine and the sine function may be observed.
+    </span>
+</div>
+
+<img id="header" src="../img/tut2-header.svg" alt="Fourier Transform & Translation">
+
+<div id="shift-container">
+        <fieldset class="range__field">
+        <div class="sliderText">Spatial Shift<br>\(x_0=\) <span id="shift-value"></span></div>
+        <input class="range" type="range" min="-2" max="2" value="0" step="any" id="shift-slider" list="snap">
+        <svg role="presentation" width="100%" height="10">
+            <rect class="range__tick" x="0%" y="3" width="1" height="10"></rect>
+            <rect class="range__tick" x="25%" y="3" width="1" height="10"></rect>
+            <rect class="range__tick" x="50%" y="3" width="1" height="10"></rect>
+            <rect class="range__tick" x="75%" y="3" width="1" height="10"></rect>
+            <rect class="range__tick" x="100%" y="3" width="1" height="10"></rect>
+        </svg>
+        <svg role="presentation" width="100%" height="14">
+            <text class="range__point" x="0%" y="14" text-anchor="start">-2</text>
+            <text class="range__point" x="25%" y="14" text-anchor="middle">-1</text>
+            <text class="range__point" x="50%" y="14" text-anchor="middle">0</text>
+            <text class="range__point" x="75%" y="14" text-anchor="middle">1</text>
+            <text class="range__point" x="100%" y="14" text-anchor="end">2</text>
+        </svg>
+        </fieldset>
+        
+        <datalist id="snap">
+          <option value="-1.5">
+          <option value="-1">
+          <option value="-0.5">
+          <option value="0">
+          <option value="0.5">
+          <option value="1">
+          <option value="1.5">
+        </datalist>
+</div>
+  
+<div id="content-container">
+  <div class="column">
+	<div class="plot" id="graph_signal"><!-- graph will be drawn inside this DIV -->
+	  <span class="graph_label" style="width:70px;">\(f(x-x_0)\)</span>
+	</div>
+    <div class="plot" id="graph_rp"><!-- graph will be drawn inside this DIV --></div>
+    <div class="plot" id="graph_ip"><!-- graph will be drawn inside this DIV --></div>
+  </div>
+  
+  <div class="column">
+	<div class="plot" id="graph_ft_realnoshift"><!-- graph will be drawn inside this DIV -->
+	  <span class="graph_annotation">\(F\)<span id="ftrealnoshift_values"></span></span>
+	  <span class="graph_label">\(F(u)_{real}\)<br>\(\text{for no spatial shift}\)</span>
+	</div>
+    
+    <div class="plot" id="graph_ft_real"><!-- graph will be drawn inside this DIV -->
+      <span class="graph_annotation">\(F\)<span id="argRP"></span>\(_{\mathrm{real}} =\) <span id="areaRP"></span></span>
+      <span class="graph_label">\(F(u)_{real}\)<br>\(\text{with spatial shift}\)</span>
+    </div>
+    
+    <div class="plot" id="graph_ft_imag"><!-- graph will be drawn inside this DIV -->
+      <span class="graph_annotation">\(F\)<span id="argIP"></span>\(_{\mathrm{imag}} =\) <span id="areaIP"></span></span> 
+      <span class="graph_label">\(F(u)_{imag}\)<br>\(\text{with spatial shift}\)</span>
+    </div>
+  </div>
+</div>
+
+    <div id="slider-container">
+        <fieldset class="range__field">
+        <div class="sliderText">Frequency<br>\(u=\) <span id="freq-value"></span></div>
+        <input class="range" type="range" min="-16" max="16" value="1" step="any" id="frequency-slider">
+        <svg role="presentation" width="100%" height="10">
+            <rect class="range__tick" x="0%" y="3" width="1" height="10"></rect>
+            <rect class="range__tick" x="25%" y="3" width="1" height="10"></rect>
+            <rect class="range__tick" x="50%" y="3" width="1" height="10"></rect>
+            <rect class="range__tick" x="75%" y="3" width="1" height="10"></rect>
+            <rect class="range__tick" x="100%" y="3" width="1" height="10"></rect>
+        </svg>
+        <svg role="presentation" width="100%" height="14">
+            <text class="range__point" x="0%" y="14" text-anchor="start">-16 Hz</text>
+            <text class="range__point" x="25%" y="14" text-anchor="middle">-8 Hz</text>
+            <text class="range__point" x="50%" y="14" text-anchor="middle">0 Hz</text>
+            <text class="range__point" x="75%" y="14" text-anchor="middle">8 Hz</text>
+            <text class="range__point" x="100%" y="14" text-anchor="end">16 Hz</text>
+        </svg>
+        </fieldset>
+  </div>
+
+<div class="center">
+  <div class="pagination">
+    <a href="../index.html"><i class="fa fa-home"></i></a>
+    <a href="index.html">&laquo;</a>
+    <a href="index.html">1</a>
+    <a class="active" href="#">2</a>
+    <a href="p3.html">3</a>
+    <a href="p4.html">4</a>
+    <a href="p3.html">&raquo;</a>
+  </div>
+</div>
+
+<script>
+// set height of tooltip container to height of chapter. 
+var tooltipcont = document.getElementById("cont");
+var chHeight = document.getElementById("chapter").clientHeight;
+tooltipcont.style.height = chHeight-5 + "px";
+
+// move tooltiptext down by chapter height
+var tooltiptext = document.getElementsByClassName("tooltiptext")[0];
+tooltiptext.style.transform = `translate(-30vw, ${chHeight+10}px)`;
+
+// html elements
+var tooltip = document.getElementsByClassName("tooltip")[0];
+var slider = document.getElementById("frequency-slider");
+var shiftSlider = document.getElementById("shift-slider");
+var shiftValue = document.getElementById("shift-value");
+var freqValuehtml = document.getElementById("freq-value");
+var areaRPhtml = document.getElementById("areaRP");
+var argRPhtml= document.getElementById("argRP");
+var argIPhtml= document.getElementById("argIP");
+var areaIPhtml = document.getElementById("areaIP");
+var ftrealnoshifthtml = document.getElementById("ftrealnoshift_values");
+
+// variables
+var resolution = 0.01;
+var u = slider.value // initial value for u (frequency)
+var x0 = parseFloat(shiftSlider.value) // initial value for x0 (shift)
+var areaRP, areaIP, areaRPnoshift;
+
+// slider stats
+var sliderCurrent, sliderMax, sliderMin;
+initSliderStats();
+
+// graph settings + initial plots --------------------------------------------------
+const [layout, config] = plotlyOptions() 
+const layoutFT = JSON.parse(JSON.stringify(layout));
+
+layoutFT.xaxis.range = [-16, 16];
+layoutFT.xaxis.tickvals = [-16, -8, 0, 8, 16];
+layoutFT.xaxis.ticktext = ["-16\u00B72\u03C0", "-8\u00B72\u03C0", 0, "8\u00B72\u03C0", "16\u00B72\u03C0"];
+
+const layoutFTIM = JSON.parse(JSON.stringify(layoutFT));
+layoutFTIM.yaxis.ticktext = ['-j', '0', 'j'];
+
+const layoutIM = JSON.parse(JSON.stringify(layout));
+layoutIM.yaxis.ticktext = ['-j', '0', 'j'];
+
+// Generate values
+var [dataSignal, dataRP, dataIP, dataFTRPnoshift, dataFTRP, dataFTIP, yValsFTRPnoshift, yValsFTRP, yValsFTIP] = generateData();
+
+updateHTML();
+drawGraphs();
+
+// update visuals according to frequency slider
+slider.oninput = function() {
+  u = this.value; // THIS IS A STRING
+  
+  // Slider Stats
+  updateSliderStats();
+
+  updateHTML();
+  
+  updateMarker(yValsFTRPnoshift, "graph_ft_realnoshift");
+  updateMarker(yValsFTRP, "graph_ft_real");
+  updateMarker(yValsFTIP, "graph_ft_imag");
+}
+
+// update visuals according to shift slider
+shiftSlider.oninput = function() {
+  x0 = parseFloat(this.value); // THIS IS A NUMBER
+  
+  [yValsSignal, yValsRP, yValsIP, yValsFTRPnoshift, yValsFTRP, yValsFTIP] = updateData();
+
+  updateHTML();
+  updateGraphs();
+  
+  updateMarker(yValsFTRPnoshift, "graph_ft_realnoshift");
+  updateMarker(yValsFTRP, "graph_ft_real");
+  updateMarker(yValsFTIP, "graph_ft_imag");
+}
+
+// functions --------------------------------------------------
+function drawGraphs() {
+  Plotly.newPlot("graph_signal", dataSignal, layout, config);
+  Plotly.newPlot("graph_rp", dataRP, layoutFT, config);
+  Plotly.newPlot("graph_ip", dataIP, layoutFTIM, config);
+  Plotly.newPlot("graph_ft_realnoshift", dataFTRPnoshift, layoutFT, config);
+  Plotly.newPlot("graph_ft_real", dataFTRP, layoutFT, config);
+  Plotly.newPlot("graph_ft_imag", dataFTIP, layoutFTIM, config);
+}
+
+function updateHTML() {
+  areaRP = yValsFTRP[sliderCurrent].toFixed(2);
+  areaIP = yValsFTIP[sliderCurrent].toFixed(2);
+  areaRPnoshift = yValsFTRPnoshift[sliderCurrent].toFixed(2);
+  
+  shiftValue.innerHTML = x0.toFixed(2);
+  freqValuehtml.innerHTML = parseFloat(u).toFixed(2) + ' Hz';
+  argRP.innerHTML = `(${parseFloat(u).toFixed(2)}\u00B72\u03C0)`;
+  argIP.innerHTML = `(${parseFloat(u).toFixed(2)}\u00B72\u03C0)`;
+  areaRPhtml.innerHTML = `${areaRP}`;
+  ftrealnoshifthtml.innerHTML = `(${parseFloat(u).toFixed(2)}\u00B72\u03C0) = ${areaRPnoshift}`;
+  
+  if (areaIP >= 0) {
+    areaIPhtml.innerHTML = "j\u2009" + Math.abs(areaIP).toFixed(2);
+  } else {
+    areaIPhtml.innerHTML = "-j\u2009" + Math.abs(areaIP);
+  }  
+}
+
+function updateGraphs() {  
+  Plotly.restyle("graph_signal", 'y', [yValsSignal]);
+  Plotly.restyle("graph_rp", 'y', [yValsRP]);
+  Plotly.restyle("graph_ip", 'y', [yValsIP]);
+  Plotly.restyle("graph_ft_realnoshift", 'y', [yValsFTRPnoshift]);
+  Plotly.restyle("graph_ft_real", 'y', [yValsFTRP]);
+  Plotly.restyle("graph_ft_imag", 'y', [yValsFTIP]);
+}
+
+function initSliderStats() {
+  sliderCurrent = Math.round(((parseFloat(u)+16)/resolution + Number.EPSILON));
+  sliderMax = (parseFloat(u)+16)/resolution; // index for starting position (u = 1): (u+16)/resolution
+  sliderMin = (parseFloat(u)+16)/resolution;
+}
+
+function updateSliderStats() {
+  sliderCurrent = Math.round(((parseFloat(u)+16)/resolution + Number.EPSILON));   
+  sliderMax = Math.max(sliderCurrent, sliderMax);
+  sliderMin = Math.min(sliderCurrent, sliderMin);
+}
+
+function updateMarker(yValues, domID) { 
+  // update marker position
+  let upd = {
+    'x': [[parseFloat(u)]],
+    'y': [[yValues[sliderCurrent]]]
+  };
+  
+  // update plot
+  Plotly.restyle(domID, upd, 1);
+}
+
+function plotlyOptions() {
+  let col = '#ebebeb';
+
+  let L = {
+  width: document.getElementById("content-container").clientWidth/2,
+  height: document.getElementById("content-container").clientHeight/3,
+  margin: {
+    l: 30,
+    r: 30,
+    b: 20,
+    t: 20,
+    pad: 0
+  },
+  xaxis: {
+    range: [-5, 5],
+    mirror: true,
+    
+    linecolor: col,
+    showline: true,
+    linewidth: 1,  
+    
+    zeroline: true,
+    zerolinewidth: 1,
+    zerolinecolor: col,
+    
+    showgrid: true,
+    gridwidth: 1,
+    gridcolor: col
+  },
+  yaxis: {
+    range: [-1, 1],
+    mirror: true,
+    tickvals: [-1, 0, 1],
+    
+    linecolor: col,
+    showline: true,
+    linewidth: 1,  
+    
+    zeroline: true,
+    zerolinewidth: 1,
+    zerolinecolor: col,
+    
+    showgrid: true,
+    gridwidth: 1,
+    gridcolor: col
+  },
+    showlegend: false
+    }
+  
+  let conf = {
+  staticPlot: true
+  }
+  return [L, conf]
+}
+
+function mathRect(x) {
+// rect function 
+  switch (Math.abs(x) >= 0.5) {
+  
+  case (true):
+    return 0
+    
+  case (false):
+    return 1
+  }
+}
+
+function mathSinc(x) {
+// sinc function 
+  if (x === 0) {
+    return 1
+  }
+  return (Math.sin(Math.PI * x)) / (Math.PI * x)
+}
+
+function mathFuncRP(u, x) {
+  return Math.cos(-2 * Math.PI * u * x)
+}
+
+function mathFuncIP(u, x) {
+  return Math.sin(-2 * Math.PI * u * x)
+}
+
+function generateData() {
+// generate arrays used to plot functions with plotly
+  let xValues = [];
+  let yValuesSignal = [];
+  let yValuesRP = [];
+  let yValuesIP = [];
+  let ySignal, yRP, yIP, dataSignal, dataRP, dataIP;
+
+  let f = mathRect;
+  
+  let uValues = [];
+  let yValuesFTRPnoshift = [];
+  let yValuesFTRP = [];
+  let yValuesFTIP = [];
+  let yFTRPnoshift, yFTRP, yFTIP, dataFTRPnoshift, dataFTRP, dataFTIP;
+  
+  // calculate time signals
+  for (let x = -5; x <= 5; x += resolution) {   
+    ySignal = f(x-x0);
+
+    xValues.push(x);
+    yValuesSignal.push(ySignal);
+  }
+  
+  dataSignal = [{x:xValues, y:yValuesSignal, mode:"lines", line: {color: "black"}}];
+    
+  // calculate fourier transform
+  for (let fr = -16; fr <= 16; fr += resolution) {   
+    uValues.push(fr);
+    
+    yRP = Math.cos(-2 * Math.PI * fr * x0);
+    yIP = Math.sin(-2 * Math.PI * fr * x0);
+    yValuesRP.push(yRP);
+    yValuesIP.push(yIP);
+    
+    // shifting theorem
+    yValuesFTRP.push(mathSinc(fr)*Math.cos(-2 * Math.PI * fr * x0));
+    yValuesFTIP.push(mathSinc(fr)*Math.sin(-2 * Math.PI * fr * x0));
+    yValuesFTRPnoshift.push(mathSinc(fr));
+  }
+  
+  trace1FTRP = {x:uValues, y:yValuesFTRP, mode:"lines"};
+  trace1FTIP = {x:uValues, y:yValuesFTIP, mode:"lines"};
+  trace1FTRPnoshift = {x:uValues, y:yValuesFTRPnoshift, mode:"lines"};
+  
+  // markers
+  trace2FTRP = {x:[uValues[sliderCurrent]], y:[yValuesFTRP[sliderCurrent]], mode:"markers", marker:{color: 'red', size:10, opacity:0.8}};
+  trace2FTIP = {x:[uValues[sliderCurrent]], y:[yValuesFTIP[sliderCurrent]], mode:"markers", marker:{color: 'red', size:10, opacity:0.8}};
+  trace2FTRPnoshift = {x:[uValues[sliderCurrent]], y:[yValuesFTRPnoshift[sliderCurrent]], mode:"markers", marker:{color: 'red', size:10, opacity:0.8}};
+  
+  dataRP = [{x:uValues, y:yValuesRP, mode:"lines"}];
+  dataIP = [{x:uValues, y:yValuesIP, mode:"lines", line: {color: 'red'}}];
+  dataFTRP = [trace1FTRP, trace2FTRP];
+  dataFTIP = [trace1FTIP, trace2FTIP];
+  dataFTRPnoshift = [trace1FTRPnoshift, trace2FTRPnoshift];
+  
+  return [dataSignal, dataRP, dataIP, dataFTRPnoshift, dataFTRP, dataFTIP, yValuesFTRPnoshift, yValuesFTRP, yValuesFTIP]
+}
+
+function updateData() {
+// update arrays used to plot functions with plotly
+  let f = mathRect;
+  
+  let yValuesSignal = [];
+  let yValuesRP = [];
+  let yValuesIP = [];
+  let ySignal, yRP, yIP;
+  
+  let uValues = [];
+  let yValuesFTRPnoshift = [];
+  let yValuesFTRP = [];
+  let yValuesFTIP = [];
+  
+  let yFTRPnoshift, yFTRP, yFTIP;
+    
+  // calculate time signals
+  for (let x = -5; x <= 5; x += resolution) {   
+    ySignal = f(x-x0);
+    yValuesSignal.push(ySignal);
+  }
+  
+  // calculate fourier transform
+  for (let fr = -16; fr <= 16; fr += resolution) {   
+    yRP = Math.cos(-2 * Math.PI * fr * x0);
+    yIP = Math.sin(-2 * Math.PI * fr * x0);
+    yValuesRP.push(yRP);
+    yValuesIP.push(yIP);
+    
+    // shifting theorem
+    yValuesFTRP.push(mathSinc(fr)*Math.cos(-2 * Math.PI * fr * x0));
+    yValuesFTIP.push(mathSinc(fr)*Math.sin(-2 * Math.PI * fr * x0));
+    yValuesFTRPnoshift.push(mathSinc(fr));
+  }
+    
+  return [yValuesSignal, yValuesRP, yValuesIP, yValuesFTRPnoshift, yValuesFTRP, yValuesFTIP]
+}
+
+function ToggleDescription() {
+  if (tooltiptext.style.opacity == 1)
+    {
+    tooltiptext.style.opacity = 0;
+    tooltiptext.style.display = "none";
+    //tooltip.classList.remove("active");
+    }
+  else
+    {
+    tooltiptext.style.display = "block";
+    tooltiptext.style.opacity = 1;
+    //tooltip.classList.add("active");
+    }
+  return
+}
+</script>
+
+</body>
+</html>
+

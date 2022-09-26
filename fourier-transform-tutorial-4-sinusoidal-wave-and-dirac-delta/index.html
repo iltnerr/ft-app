@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Fourier Transform Tutorial 4</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width">
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script> <!-- plotly-->
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script> <!-- latex style math notation-->
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="https://unpkg.com/mathjs/lib/browser/math.js"></script> <!-- math library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- icon library -->
+<style>
+#logoBG{
+  width:99%;
+  height:40px;
+  background: #edede8ff;
+  position: absolute;
+  top: 0.5%;
+}
+
+.logo {
+  display: block;
+  position: absolute;
+  margin-left: 50%;
+  margin-right: 50%;
+  top: 0.5%;
+  transform: translateX(-50%); /*use center anchor point along x axis*/
+  z-index: 1;
+}
+
+h2 {
+  margin-bottom: 0;
+}
+
+#chapter-container{
+  width: 100vw;
+  margin-bottom: 20px;
+  padding-top: 80px;
+  position: relative;
+}
+
+#chapter {
+  float: left;
+  max-width: 70vw;
+  margin-right: 50px;
+  margin-bottom: 30px;
+}
+
+#cont {
+  float: left;
+  position: relative;
+}
+
+.tooltip {
+  font-size: 50px;
+  cursor: pointer;
+  
+  position: absolute;
+  left: 0%;
+  bottom: 0%;
+  /*positioning is handled via JS */
+  
+  /* make tooltip non-selectable*/
+  -webkit-touch-callout: none;
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none; 
+            user-select: none; 
+}
+
+.tooltiptext {
+  font-size: 20px;
+  width: 60vw;
+  background-color: #555;
+  color: #fff;
+  text-align: justify;
+  border-radius: 6px;
+  padding: 10px 10px;
+  
+  position: absolute;
+  z-index: 2;
+  
+  left: 50%;
+  /*positioning (translation) is handled via JS */
+
+  opacity: 0;
+  display: none;
+  transition: opacity 0.3s;
+}
+
+#header {
+  width: 30vw;
+  min-width: 400px;
+  max-width: 500px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 30px;
+  padding-left: 20vw;
+  padding-right: 20vw;
+}
+
+.sliderText {
+  width: 100%;
+  text-align: center;
+}
+
+#content-container {
+  height: 22vh;
+  width: 60%; 
+  margin: auto;
+}
+
+.header {
+  font-size: 25px;
+  text-align: center;
+  display: inline-block;
+  margin-left: 50px;
+  margin-right: 50px;  
+  margin-bottom: 5px;
+}
+
+.bordered-header {
+  padding: 3px;
+  border: 3px solid;
+}
+
+/*-----graph settings-----*/
+.plot {
+  position: relative;
+}
+
+.graph_label {
+  position: absolute;
+  right: 5%;
+  top: 15%;
+  z-index: 1;
+  background-color: white;
+  border: solid 1px;
+  width: 140px;
+  text-align: center;
+  padding: 2px;
+}
+
+/*-----frequency slider-----*/
+#slider-container {
+  padding-top: 10px;
+  width: 33%;
+  margin: auto;
+}
+
+input.range {
+  -webkit-appearance: none;
+  bottom: -10px;
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+input.range:focus {
+  outline: 0;
+}
+input.range::-moz-focus-outer {
+  border: 0;
+}
+
+input.range::-webkit-slider-thumb {
+  box-shadow: 1px 1px 1px black, 0px 0px 1px black;
+  border: 0;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -7.5px;
+}
+ 
+input.range::-moz-range-thumb {
+  box-shadow: 1px 1px 1px black, 0px 0px 1px black;
+  border: 0;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+}
+input.range::-ms-thumb {
+  box-shadow: 1px 1px 1px black, 0px 0px 1px black;
+  border: 0;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+  height: 5px;
+}
+
+input.range::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 5px;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0), 0px 0px 1px rgba(13, 13, 13, 0);
+  background: grey;
+  border-radius: 20px;
+  border: 0;
+}
+ 
+input.range::-moz-range-track {
+  width: 100%;
+  height: 5px;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0), 0px 0px 1px rgba(13, 13, 13, 0);
+  background: grey;
+  border-radius: 20px;
+  border: 0;
+}
+ 
+input.range::-ms-track {
+  width: 100%;
+  height: 5px;
+  cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+
+input.range::-ms-fill-lower,
+input.range::-ms-fill-upper {
+  background: grey;
+  border: 0;
+  border-radius: 40px;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0), 0px 0px 1px rgba(13, 13, 13, 0);
+}
+
+.range__tick {
+  fill: #a0a0a0;
+}
+
+.range__tick:first-child {
+  -webkit-transform: translateX(2px);
+  -moz-transform: translateX(2px);
+  -ms-transform: translateX(2px);
+  -o-transform: translateX(2px);
+  transform: translateX(2px);
+}
+.range__tick:last-child {
+  -webkit-transform: translateX(-3px);
+  -moz-transform: translateX(-3px);
+  -ms-transform: translateX(-3px);
+  -o-transform: translateX(-3px);
+  transform: translateX(-3px);
+}
+
+.range__field {
+  border: 0;
+}
+
+/*-----pagination-----*/
+.center {
+  text-align: center;
+  padding-top: 50px;
+  padding-bottom: 25px;
+}
+  
+.pagination {
+  display: inline-block;
+}
+
+.pagination a {
+  color: black;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+.pagination a.active {
+  background-color: #1c33c7ff;
+  color: white;
+}
+
+.pagination a:hover:not(.active) {
+background-color: #ddd;
+}
+</style>
+</head>
+<body>
+
+<div id="logoBG">
+  <a href="../index.html"><img src="../img/getlab-logo.png" alt="GETLab-Logo" class="logo"></a>
+</div>
+
+<div id="chapter-container">
+    <div id="chapter">
+        <h1>Tutorial 4: Sinusoidal Wave and the Dirac Delta</h1>
+        <h2>Considering a Sinusoidal Wave to Derive the Concept of the Dirac Delta Function.</h2>
+    </div>
+
+    <div id="cont">
+      <div class="tooltip" onclick="ToggleDescription()">&#x1F4A1;</div>
+    </div>
+    
+    <span class="tooltiptext">
+      In this tutorial we are going to approach the concept of the <i>Dirac delta</i> function step by step. To this end we consider \(f(x)\) to be a <b>sinusoidal wave</b> of the shape \(f(x) = \cos(\omega_0 x - x_0)\) where \(\omega_0 = 2\pi\beta\) and \(\beta\) is some fixed frequency. Keep in mind that any sine function may always be represented by a shifted cosine function and vice versa.
+      <br><br>
+      For now we consider \(f(x)\) to be a cosine function with no shift: \(f(x)=\cos(\omega_0 x)\). On the next pages we will continue by determining the Fourier transform for such a sinusoidal wave. 
+    </span>
+</div>
+
+<img id="header" src="../img/tut4-header.svg" alt="Fourier Transform">
+  
+<div id="content-container">
+<div class="plot" id="graph_signal"><!-- graph will be drawn inside this DIV -->
+  <span class="graph_label" style="width:70px;">\(f(x)\)</span>
+</div>
+</div>
+ 
+</div>
+    <div id="slider-container">
+    <fieldset class="range__field">
+    <div class="sliderText">Frequency<br>\(\beta=\) <span id="freq-value"></span></div>
+    <input class="range" type="range" min="0" max="16" value="1" step="any" id="frequency-slider">
+    <svg role="presentation" width="100%" height="10">
+        <rect class="range__tick" x="0%" y="3" width="1" height="10"></rect>
+        <rect class="range__tick" x="25%" y="3" width="1" height="10"></rect>
+        <rect class="range__tick" x="50%" y="3" width="1" height="10"></rect>
+        <rect class="range__tick" x="75%" y="3" width="1" height="10"></rect>
+        <rect class="range__tick" x="100%" y="3" width="1" height="10"></rect>
+    </svg>
+    <svg role="presentation" width="100%" height="14">
+        <text class="range__point" x="0%" y="14" text-anchor="start">0 Hz</text>
+        <text class="range__point" x="50%" y="14" text-anchor="middle">8 Hz</text>
+        <text class="range__point" x="100%" y="14" text-anchor="end">16 Hz</text>
+    </svg>
+    </fieldset>
+</div>
+
+<div class="center">
+  <div class="pagination">
+    <a href="../index.html"><i class="fa fa-home"></i></a>
+    <a href="#">&laquo;</a>
+    <a class="active" href="#">1</a>
+    <a href="p2.html">2</a>
+    <a href="p3.html">3</a>
+    <a href="p4.html">4</a>
+    <a href="p2.html">&raquo;</a>
+  </div>
+</div>
+
+<script>
+// set height of tooltip container to height of chapter. 
+var tooltipcont = document.getElementById("cont");
+var chHeight = document.getElementById("chapter").clientHeight;
+tooltipcont.style.height = chHeight-5 + "px";
+
+// move tooltiptext down by chapter height
+var tooltiptext = document.getElementsByClassName("tooltiptext")[0];
+tooltiptext.style.transform = `translate(-30vw, ${chHeight+10}px)`;
+
+// html elements
+var tooltip = document.getElementsByClassName("tooltip")[0];
+var slider = document.getElementById("frequency-slider");
+var freqValuehtml = document.getElementById("freq-value");
+
+// variables
+var resolution = 0.01;
+var u = slider.value; // initial value for u (frequency)
+
+// graph settings + initial plots --------------------------------------------------
+const [layout, config] = plotlyOptions() 
+
+// Generate values
+var dataSignal = generateData();
+var yValsSignal; // use this variable to dynamically update values as the slider moves
+
+// dynamic text
+freqValuehtml.innerHTML = parseFloat(u).toFixed(2) + ' Hz';
+
+drawGraphs();
+
+// update visuals according to frequency slider
+slider.oninput = function() {
+  u = this.value; // THIS IS A STRING
+  
+  yValsSignal = updateData();
+
+  // update visuals
+  updateHTML(); 
+  Plotly.restyle('graph_signal', 'y', [yValsSignal]);
+}
+
+// functions --------------------------------------------------
+function drawGraphs() {
+  Plotly.newPlot("graph_signal", dataSignal, layout, config);
+}
+
+function updateHTML() {    
+  freqValuehtml.innerHTML = parseFloat(u).toFixed(2) + ' Hz';
+}
+
+function plotlyOptions() {
+  let col = '#ebebeb';
+
+  let L = {
+  height: document.getElementById("content-container").clientHeight/1,
+  margin: {
+    l: 30,
+    r: 30,
+    b: 20,
+    t: 20,
+    pad: 0
+  },
+  xaxis: {
+    range: [-5, 5],
+    mirror: true,
+    
+    linecolor: col,
+    showline: true,
+    linewidth: 1,  
+    
+    zeroline: true,
+    zerolinewidth: 1,
+    zerolinecolor: col,
+    
+    showgrid: true,
+    gridwidth: 1,
+    gridcolor: col
+  },
+  yaxis: {
+    range: [-1, 1],
+    mirror: true,
+    tickvals: [-1, 0, 1],
+    
+    linecolor: col,
+    showline: true,
+    linewidth: 1,  
+    
+    zeroline: true,
+    zerolinewidth: 1,
+    zerolinecolor: col,
+    
+    showgrid: true,
+    gridwidth: 1,
+    gridcolor: col
+  },
+    showlegend: false
+    }
+  
+  let conf = {
+  staticPlot: true
+  }
+  return [L, conf]
+}
+
+function mathFuncRP(x) {
+  return Math.cos(2 * Math.PI * u * x)
+}
+
+function generateData() {
+// generate arrays used to plot functions with plotly
+  // input signal
+  let xValues = [];
+  let yValues = [];
+  
+  // calculate input signal
+  for (let x = -5; x <= 5; x += resolution) {
+    xValues.push(x);
+    yValues.push(mathFuncRP(x))
+  }
+  
+  // prepare data for plotly
+  
+  let traceInput, dataInput;
+  
+  // lines
+  traceInput = {x:xValues, y:yValues, mode:"lines"};
+  
+  dataInput = [traceInput];
+  
+  return dataInput
+}
+
+function updateData() {
+// update arrays used to plot functions with plotly
+  // input signal
+  let yValuesInput = []
+    
+  // calculate input signal
+  for (let x = -5; x <= 5; x += resolution) {   
+    yValuesInput.push(mathFuncRP(x));
+  }
+  return yValuesInput
+}
+
+function ToggleDescription() {
+  if (tooltiptext.style.opacity == 1)
+    {
+    tooltiptext.style.opacity = 0;
+    tooltiptext.style.display = "none";
+    //tooltip.classList.remove("active");
+    }
+  else
+    {
+    tooltiptext.style.display = "block";
+    tooltiptext.style.opacity = 1;
+    //tooltip.classList.add("active");
+    }
+  return
+}
+</script>
+
+</body>
+</html>
+

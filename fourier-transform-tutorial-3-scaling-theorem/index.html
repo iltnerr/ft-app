@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Fourier Transform Tutorial 3</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width">
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script> <!-- plotly-->
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script> <!-- latex style math notation-->
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="https://unpkg.com/mathjs/lib/browser/math.js"></script> <!-- math library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <!-- icon library -->
+<style>
+#logoBG{
+  width:99%;
+  height:40px;
+  background: #edede8ff;
+  position: absolute;
+  top: 0.5%;
+}
+
+.logo {
+  display: block;
+  position: absolute;
+  margin-left: 50%;
+  margin-right: 50%;
+  top: 0.5%;
+  transform: translateX(-50%); /*use center anchor point along x axis*/
+  z-index: 1;
+}
+
+h2 {
+  margin-bottom: 0;
+}
+
+#chapter-container{
+  width: 100vw;
+  margin-bottom: 20px;
+  padding-top: 80px;
+  position: relative;
+}
+
+#chapter {
+  float: left;
+  max-width: 70vw;
+  margin-right: 50px;
+  margin-bottom: 30px;
+}
+
+#cont {
+  float: left;
+  position: relative;
+}
+
+.tooltip {
+  font-size: 50px;
+  cursor: pointer;
+  
+  position: absolute;
+  left: 0%;
+  bottom: 0%;
+  /*positioning is handled via JS */
+  
+  /* make tooltip non-selectable*/
+  -webkit-touch-callout: none;
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none; 
+            user-select: none; 
+}
+
+.tooltiptext {
+  font-size: 20px;
+  width: 60vw;
+  background-color: #555;
+  color: #fff;
+  text-align: justify;
+  border-radius: 6px;
+  padding: 10px 10px;
+  
+  position: absolute;
+  z-index: 2;
+  
+  left: 50%;
+  /*positioning (translation) is handled via JS */
+
+  opacity: 0;
+  display: none;
+  transition: opacity 0.3s;
+}
+
+#header {
+  width: 60vw;
+  min-width: 500px;
+  max-width: 1000px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 30px;
+  padding-left: 20vw;
+  padding-right: 20vw;
+}
+
+#scale-container {
+  width: 26%;
+  margin-left: 12.5%;
+}
+
+.sliderText {
+  width: 100%;
+  text-align: center;
+}
+
+#content-container {
+  height: 44vh;
+  width: 100%; 
+}
+
+.header {
+  font-size: 25px;
+  text-align: center;
+  display: inline-block;
+  margin-left: 50px;
+  margin-right: 50px;  
+  margin-bottom: 5px;
+}
+
+.bordered-header {
+  padding: 3px;
+  border: 3px solid;
+}
+
+.column {
+  float: left;
+  width: 50%;
+}
+
+/*-----graph settings-----*/
+text.top-right-legend {
+  display: none;
+}
+
+g.tip {
+  display: none;
+}
+
+.plot {
+  position: relative;
+}
+
+.graph_annotation {
+  position: absolute;
+  left: 10%;
+  top: 15%;
+  z-index: 1;
+  background-color: #d6d5d5;
+  width: 150px;
+  text-align: left;
+  padding-left: 3px;
+}
+
+.graph_label {
+  position: absolute;
+  right: 5%;
+  top: 15%;
+  z-index: 1;
+  background-color: white;
+  border: solid 1px;
+  width: 160px;
+  text-align: center;
+  padding: 2px;
+}
+
+/*-----slider-----*/
+#slider-container {
+  padding-top: 10px;
+  width: 75%;
+  margin: auto;
+}
+
+input.range {
+  -webkit-appearance: none;
+  bottom: -10px;
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+input.range:focus {
+  outline: 0;
+}
+input.range::-moz-focus-outer {
+  border: 0;
+}
+
+input.range::-webkit-slider-thumb {
+  box-shadow: 1px 1px 1px black, 0px 0px 1px black;
+  border: 0;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -7.5px;
+}
+ 
+input.range::-moz-range-thumb {
+  box-shadow: 1px 1px 1px black, 0px 0px 1px black;
+  border: 0;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+}
+input.range::-ms-thumb {
+  box-shadow: 1px 1px 1px black, 0px 0px 1px black;
+  border: 0;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+  height: 5px;
+}
+
+input.range::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 5px;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0), 0px 0px 1px rgba(13, 13, 13, 0);
+  background: grey;
+  border-radius: 20px;
+  border: 0;
+}
+ 
+input.range::-moz-range-track {
+  width: 100%;
+  height: 5px;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0), 0px 0px 1px rgba(13, 13, 13, 0);
+  background: grey;
+  border-radius: 20px;
+  border: 0;
+}
+ 
+input.range::-ms-track {
+  width: 100%;
+  height: 5px;
+  cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+
+input.range::-ms-fill-lower,
+input.range::-ms-fill-upper {
+  background: grey;
+  border: 0;
+  border-radius: 40px;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0), 0px 0px 1px rgba(13, 13, 13, 0);
+}
+
+.range__tick {
+  fill: #a0a0a0;
+}
+
+.range__tick:first-child {
+  -webkit-transform: translateX(2px);
+  -moz-transform: translateX(2px);
+  -ms-transform: translateX(2px);
+  -o-transform: translateX(2px);
+  transform: translateX(2px);
+}
+.range__tick:last-child {
+  -webkit-transform: translateX(-3px);
+  -moz-transform: translateX(-3px);
+  -ms-transform: translateX(-3px);
+  -o-transform: translateX(-3px);
+  transform: translateX(-3px);
+}
+
+.range__field {
+  border: 0;
+}
+
+/*-----pagination-----*/
+.center {
+  text-align: center;
+  padding-top: 50px;
+  padding-bottom: 25px;
+}
+  
+.pagination {
+  display: inline-block;
+}
+
+.pagination a {
+  color: black;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+.pagination a.active {
+  background-color: #1c33c7ff;
+  color: white;
+}
+
+.pagination a:hover:not(.active) {
+background-color: #ddd;
+}
+</style>
+</head>
+<body>
+
+<div id="logoBG">
+  <a href="../index.html"><img src="../img/getlab-logo.png" alt="GETLab-Logo" class="logo"></a>
+</div>
+
+<div id="chapter-container">
+    <div id="chapter">
+        <h1>Tutorial 3: Scaling Theorem</h1>
+        <h2>Scaling a Function Means Stretching or Squeezing It.</h2>
+    </div>
+
+    <div id="cont">
+      <div class="tooltip" onclick="ToggleDescription()">&#x1F4A1;</div>
+    </div>
+    
+    <span class="tooltiptext">
+    This tutorial shows what happens to the Fourier transform when \(f(x)\) is stretched or squeezed by a factor \(a\). As you scale \(f(x)\) by moving the corresponding slider, you may study the behaviour of the Fourier transform. The next page will elaborate on this.
+    <br>
+    One aspect to note is that \(f(x)\) gets <b>thinner</b> as \(a\) increases and <b>wider</b> as \(a\) decreases, which is somewhat counterintuitive.
+    <br><br>
+    <u>Keep in mind:</u> The scaled function \(f(ax)\) is still an even function. Hence, here we only consider the real component of \(F(u)\).
+    </span>
+</div>
+
+<img id="header" src="../img/tut3-header.svg" alt="Fourier Transform & Scaling">
+
+<div id=scale-container>
+        <fieldset class="range__field">
+        <div class="sliderText">Scaling<br>\(a=\) <span id="scale-value"></span></div>
+        <input class="range" type="range" min="0.01" max="2" value="1" step="any" id="scale-slider" list="snap">
+        <svg role="presentation" width="100%" height="10">
+            <rect class="range__tick" x="0%" y="3" width="1" height="10"></rect>
+            <rect class="range__tick" x="25%" y="3" width="1" height="10"></rect>
+            <rect class="range__tick" x="50%" y="3" width="1" height="10"></rect>
+            <rect class="range__tick" x="75%" y="3" width="1" height="10"></rect>
+            <rect class="range__tick" x="100%" y="3" width="1" height="10"></rect>
+        </svg>
+        <svg role="presentation" width="100%" height="14">
+            <text class="range__point" x="0%" y="14" text-anchor="start">0.01</text>
+            <text class="range__point" x="25%" y="14" text-anchor="middle">0.5</text>
+            <text class="range__point" x="50%" y="14" text-anchor="middle">1</text>
+            <text class="range__point" x="75%" y="14" text-anchor="middle">1.5</text>
+            <text class="range__point" x="100%" y="14" text-anchor="end">2</text>
+        </svg>
+        </fieldset>
+        
+        <datalist id="snap">
+          <option value="0.33">
+          <option value="0.5">
+          <option value="1">
+          <option value="1.5">
+        </datalist>
+</div>
+  
+<div id="content-container">
+  <div class="column">
+	<div class="plot" id="graph_signal"><!-- graph will be drawn inside this DIV -->
+	  <span class="graph_label" style="width:70px;">\(f(a\,x)\)</span>
+	</div>
+    <div class="plot" id="graph_rp_area"><!-- graph will be drawn inside this DIV -->
+      <span class="graph_annotation">Area = <span id="areaRP"></span></span>
+      <span class="graph_label">\(F(u)_{\mathrm{real}} = \)<br>\(\int f(ax)\cdot \cos(2\pi\,ux)\,\mathrm{d}x\)</span>
+    </div>
+  </div>
+  
+  <div class="column">   
+    <div class="plot" id="graph_ft_real"><!-- graph will be drawn inside this DIV -->
+      <span class="graph_annotation">\(F\)<span id="ftValues"></span></span>
+      <span class="graph_label">\(F(u)_{real} \text{  vs. frequency}\)</span>
+    </div>
+    
+      <div id="slider-container">
+        <fieldset class="range__field">
+        <div class="sliderText">Frequency<br>\(u=\) <span id="freq-value"></span></div>
+        <input class="range" type="range" min="-16" max="16" value="1" step="any" id="frequency-slider" list="snapF">
+        <svg role="presentation" width="100%" height="10">
+            <rect class="range__tick" x="0%" y="3" width="1" height="10"></rect>
+            <rect class="range__tick" x="25%" y="3" width="1" height="10"></rect>
+            <rect class="range__tick" x="50%" y="3" width="1" height="10"></rect>
+            <rect class="range__tick" x="75%" y="3" width="1" height="10"></rect>
+            <rect class="range__tick" x="100%" y="3" width="1" height="10"></rect>
+        </svg>
+        <svg role="presentation" width="100%" height="14">
+            <text class="range__point" x="0%" y="14" text-anchor="start">-16 Hz</text>
+            <text class="range__point" x="25%" y="14" text-anchor="middle">-8 Hz</text>
+            <text class="range__point" x="50%" y="14" text-anchor="middle">0 Hz</text>
+            <text class="range__point" x="75%" y="14" text-anchor="middle">8 Hz</text>
+            <text class="range__point" x="100%" y="14" text-anchor="end">16 Hz</text>
+        </svg>
+        </fieldset>
+        
+        <datalist id="snapF">
+          <option value="0">
+        </datalist>
+        
+    </div>
+    
+  </div>
+</div>
+
+<div class="center">
+  <div class="pagination">
+    <a href="../index.html"><i class="fa fa-home"></i></a>
+    <a href="#">&laquo;</a>
+    <a class="active" href="#">1</a>
+    <a href="p2.html">2</a>
+    <a href="p3.html">3</a>
+    <a href="p2.html">&raquo;</a>
+  </div>
+</div>
+
+<script>
+// set height of tooltip container to height of chapter. 
+var tooltipcont = document.getElementById("cont");
+var chHeight = document.getElementById("chapter").clientHeight;
+tooltipcont.style.height = chHeight-5 + "px";
+
+// move tooltiptext down by chapter height
+var tooltiptext = document.getElementsByClassName("tooltiptext")[0];
+tooltiptext.style.transform = `translate(-30vw, ${chHeight+10}px)`;
+
+// html elements
+var tooltip = document.getElementsByClassName("tooltip")[0];
+var slider = document.getElementById("frequency-slider");
+var scaleSlider = document.getElementById("scale-slider");
+var scaleValue = document.getElementById("scale-value");
+var freqValuehtml = document.getElementById("freq-value");
+var areaRPhtml = document.getElementById("areaRP");
+var ftValueshtml = document.getElementById("ftValues");
+
+// variables
+var resolution = 0.01;
+var u = slider.value // initial value for u (frequency)
+var a = parseFloat(scaleSlider.value) // initial value for a (scale)
+var areaRP;
+
+// slider stats
+var sliderCurrent, sliderMax, sliderMin;
+initSliderStats();
+
+// graph settings + initial plots --------------------------------------------------
+const [layout, config] = plotlyOptions() 
+const layoutImAxes = JSON.parse(JSON.stringify(layout));
+const layoutFT = JSON.parse(JSON.stringify(layout));
+
+layoutImAxes.yaxis.ticktext = ['-j', '0', 'j'];
+layoutFT.xaxis.range = [-16, 16];
+layoutFT.xaxis.tickvals = [-16, -8, 0, 8, 16];
+layoutFT.xaxis.ticktext = ["-16\u00B72\u03C0", "-8\u00B72\u03C0", 0, "8\u00B72\u03C0", "16\u00B72\u03C0"];
+layoutFT.yaxis.range = [-1, 3];
+layoutFT.yaxis.tickvals = [-1, 0, 1, 2, 3];
+
+
+// Generate values
+var currentValues = new Array(1+((2*16)/resolution)); // array size = 1+(range/resolution)
+var [dataSignal, yVals, dataRPA, yValsRPA, dataFTRP, yValsFTRP] = generateData();
+
+updateHTML();
+drawGraphs();
+
+// update visuals according to frequency slider
+slider.oninput = function() {
+  u = this.value; // THIS IS A STRING
+    
+  // Slider Stats
+  updateSliderStats();
+  
+  [yVals, yValsRPA, yValsFTRP] = updateData();
+  
+  //update visuals
+  updateHTML();
+  
+  Plotly.restyle("graph_rp_area", 'y', [yValsRPA]);
+  
+  drawFunction(yValsFTRP, "graph_ft_real");
+}
+
+// update visuals according to scale slider
+scaleSlider.oninput = function() {
+  a = parseFloat(this.value); // THIS IS A NUMBER
+  
+  clearPlots();
+  initSliderStats();
+  
+  // generate new data arrays for plotly
+  [yVals, yValsRPA, yValsFTRP] = updateData();
+  
+  //update visuals
+  updateHTML();
+  
+  Plotly.restyle("graph_signal", 'y', [yVals]);
+  Plotly.restyle("graph_rp_area", 'y', [yValsRPA]);
+  
+  // update marker
+  drawFunction(yValsFTRP, 'graph_ft_real');
+}
+
+// functions --------------------------------------------------
+function drawGraphs() { 
+  Plotly.newPlot("graph_signal", dataSignal, layout, config);
+  Plotly.newPlot("graph_rp_area", dataRPA, layout, config);
+  Plotly.newPlot("graph_ft_real", dataFTRP, layoutFT, config);
+}
+
+function updateHTML() {  
+  areaRP = yValsFTRP[sliderCurrent].toFixed(2);
+  
+  // dynamic text
+  scaleValue.innerHTML = a.toFixed(2);
+  freqValuehtml.innerHTML = parseFloat(u).toFixed(2) + ' Hz';
+  areaRPhtml.innerHTML = areaRP;
+  ftValueshtml.innerHTML = `(${parseFloat(u).toFixed(2)}\u00B72\u03C0) = ${areaRP}`; 
+}
+  
+function updateSliderStats() {
+  sliderCurrent = Math.round(((parseFloat(u)+16)/resolution + Number.EPSILON));   
+  sliderMax = Math.max(sliderCurrent, sliderMax);
+  sliderMin = Math.min(sliderCurrent, sliderMin);
+}
+
+function drawFunction(yValues, domID) {
+// dynamically draw graph as the slider is being moved
+
+  // replace initial array with function values for the slider range of sliderMax-sliderMin
+  currentValues.splice(sliderMin, sliderMax-sliderMin+1, ...yValues.slice(sliderMin, sliderMax));
+  
+  // update marker position
+  let upd = {
+    'x': [[parseFloat(u)]],
+    'y': [[yValues[sliderCurrent]]]
+  };
+  
+  // update plot
+  Plotly.restyle(domID, 'y', [currentValues], 0);
+  Plotly.restyle(domID, upd, 1);
+}
+
+function clearPlots() {
+  
+  // re-init currentValues
+  currentValues = new Array(1+((2*16)/resolution));
+    
+  Plotly.restyle("graph_ft_real", 'y', [currentValues], 0);
+}
+
+function initSliderStats() {
+  sliderCurrent = Math.round(((parseFloat(u)+16)/resolution + Number.EPSILON));
+  sliderMax = (parseFloat(u)+16)/resolution; // index for starting position (u = 1): (u+16)/resolution
+  sliderMin = (parseFloat(u)+16)/resolution;
+}
+
+function plotlyOptions() {
+  let col = '#ebebeb';
+
+  let L = {
+  width: document.getElementById("content-container").clientWidth/2,
+  height: document.getElementById("content-container").clientHeight/2,
+  margin: {
+    l: 30,
+    r: 30,
+    b: 20,
+    t: 20,
+    pad: 0
+  },
+  xaxis: {
+    range: [-5, 5],
+    mirror: true,
+    
+    linecolor: col,
+    showline: true,
+    linewidth: 1,  
+    
+    zeroline: true,
+    zerolinewidth: 1,
+    zerolinecolor: col,
+    
+    showgrid: true,
+    gridwidth: 1,
+    gridcolor: col
+  },
+  yaxis: {
+    range: [-1, 1],
+    mirror: true,
+    tickvals: [-1, 0, 1],
+    
+    linecolor: col,
+    showline: true,
+    linewidth: 1,  
+    
+    zeroline: true,
+    zerolinewidth: 1,
+    zerolinecolor: col,
+    
+    showgrid: true,
+    gridwidth: 1,
+    gridcolor: col
+  },
+    showlegend: false
+    }
+  
+  let conf = {
+  staticPlot: true
+  }
+  return [L, conf]
+}
+
+function inputFunction(x) {
+  return mathRect(x)
+}
+
+function mathRect(x) {
+// rect function 
+  switch (Math.abs(x) >= 0.5) {
+  
+  case (true):
+    return 0
+    
+  case (false):
+    return 1
+  }
+}
+
+function mathFuncRP(u, x) {
+  return Math.cos(-2 * Math.PI * u * x)
+}
+
+function mathFuncIP(x) {
+  return Math.sin(-2 * Math.PI * u * x)
+}
+
+function mathFTRect(x) {
+  if (x === 0) {
+    return 1
+  }
+  return (Math.sin(Math.PI * x)) / (Math.PI * x)
+}
+
+function generateData() {
+// generate arrays used to plot functions with plotly
+  let xValues = [];
+  let yValues = [];
+  let yValuesRPA = [];
+  
+  let dataSignal, dataRPA, dataFTRP;
+  let rp;
+  
+  let uValues = [];
+  let yValuesFTRP = [];
+  
+  // calculate time signal
+  for (let x = -5; x <= 5; x += resolution) {
+    xValues.push(x);
+    yValues.push(inputFunction(a*x));
+    
+    yValuesRPA.push(inputFunction(a*x)*mathFuncRP(u, x))
+  }
+    
+  // calculate fourier transform
+  for (let fr = -16; fr <= 16; fr += resolution) {   
+    uValues.push(fr);
+    rp = (1/Math.abs(a))*mathFTRect(fr/a);
+    yValuesFTRP.push(rp);
+  }
+  
+  // empty line plot
+  trace1 = {x:uValues, y:currentValues, mode:"lines"};
+  traceSignal = {x:xValues, y:yValues, mode:"lines", line:{color: "black"}};
+  traceRPA = {x:xValues, y:yValuesRPA, mode:"lines", line:{color: "blue"}, fill: "tozeroy"};
+  
+  // markers
+  trace2FTRP = {x:[uValues[sliderCurrent]], y:[yValuesFTRP[sliderCurrent]], mode:"markers", marker:{color: 'red', size:10, opacity:0.8}};
+  
+  dataFTRP = [trace1, trace2FTRP];
+  dataSignal = [traceSignal];
+  dataRPA = [traceRPA];
+  
+  return [dataSignal, yValues, dataRPA, yValuesRPA, dataFTRP, yValuesFTRP]
+}
+
+function updateData() {
+// update arrays used to plot functions with plotly
+
+  let yValues = [];
+  let yValuesRPA = [];
+ 
+  let uValues = [];
+  let yValuesFTRP = [];
+  let rp;
+  
+  // calculate time signal
+  for (let x = -5; x <= 5; x += resolution) {
+    yValues.push(inputFunction(a*x));
+    yValuesRPA.push(inputFunction(a*x)*mathFuncRP(u, x))
+  }
+    
+  // calculate fourier transform
+  for (let fr = -16; fr <= 16; fr += resolution) {   
+    uValues.push(fr);
+    rp = (1/Math.abs(a))*mathFTRect(fr/a);
+    yValuesFTRP.push(rp);
+  }
+    
+  return [yValues, yValuesRPA, yValuesFTRP]
+}
+
+function ToggleDescription() {
+  if (tooltiptext.style.opacity == 1)
+    {
+    tooltiptext.style.opacity = 0;
+    tooltiptext.style.display = "none";
+    //tooltip.classList.remove("active");
+    }
+  else
+    {
+    tooltiptext.style.display = "block";
+    tooltiptext.style.opacity = 1;
+    //tooltip.classList.add("active");
+    }
+  return
+}
+</script>
+
+</body>
+</html>
+

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Fourier Transform Tutorial 1</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width">
+<style>
+body {
+  text-align: center;
+}
+
+#logoBG{
+  width:99%;
+  height:40px;
+  background: #edede8ff;
+  position: absolute;
+  top: 0.5%;
+}
+
+.logo {
+  display: block;
+  position: absolute;
+  margin-left: 50%;
+  margin-right: 50%;
+  top: 0.5%;
+  transform: translateX(-50%); /*use center anchor point along x axis*/
+  z-index: 1;
+}
+
+h1 {
+  padding-top: 100px;
+  padding-bottom: 50px;
+}
+
+h2 {
+  padding: 20px;
+}
+
+p {
+  text-align: justify;
+  width: 70%;
+  font-size: 24px;
+  margin: auto;
+}
+
+.tooltip {
+  font-size: 70px;
+  margin: auto;
+  width: 5vw;
+  position: relative;
+  cursor: pointer;
+  
+  /* make tooltip non-selectable*/
+  -webkit-touch-callout: none;
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none; 
+            user-select: none; 
+}
+
+.tooltip .tooltiptext {
+  font-size: 20px;
+  width: 20vw;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  
+  position: absolute;
+  bottom: 120%;
+  left: 0%;
+  transform: translateX(-7.5vw);
+  
+  z-index: 1;
+  opacity: 0;
+  display: none;
+  transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+</style>
+</head>
+<body>
+
+<div id="logoBG">
+  <img src="img/getlab-logo.png" alt="GETLab-Logo" class="logo">
+</div>
+
+<h1>Fourier Transform Tutorials</h1>
+
+<p>
+In the following tutorials you will encounter various interactive elements such as sliders and buttons or the light bulb below (click on it). For this reason it is recommended to view this application with Google Chrome on PC or laptop because it is currently not intended for mobile use. 
+<br><br>
+Your feedback is highly appreciated! 
+</p>
+<br>
+<div class="tooltip" onclick="ToggleDescription()">&#x1F4A1;
+  <span class="tooltiptext">Use light bulbs to toggle additional information.</span>
+</div>
+<br>
+
+<a href="fourier-transform-tutorial-1-fundamentals/index.html"><h2>Tutorial 1: Fundamentals</h2></a>
+<a href="fourier-transform-tutorial-2-shifting-theorem/index.html"><h2>Tutorial 2: Shifting Theorem</h2></a>
+<a href="fourier-transform-tutorial-3-scaling-theorem/index.html"><h2>Tutorial 3: Scaling Theorem</h2></a>
+<a href="fourier-transform-tutorial-4-sinusoidal-wave-and-dirac-delta/index.html"><h2>Tutorial 4: Sinusoidal Wave and the Dirac Delta</h2></a>
+<a href="fourier-transform-tutorial-5-differentiation-and-integration/index.html"><h2>Tutorial 5: Differentiation and Integration</h2></a>
+
+
+<script>
+var tooltiptext = document.getElementsByClassName("tooltiptext")[0];
+var tooltip = document.getElementsByClassName("tooltip")[0];
+
+function ToggleDescription() {
+  if (tooltiptext.style.opacity == 1)
+    {
+    tooltiptext.style.opacity = 0;
+    tooltiptext.style.display = "none";
+    //tooltip.classList.remove("active");
+    }
+  else
+    {
+    tooltiptext.style.display = "block";
+    tooltiptext.style.opacity = 1;
+    //tooltip.classList.add("active");
+    }
+  return
+}
+</script>
+
+</body>
+</html>
+

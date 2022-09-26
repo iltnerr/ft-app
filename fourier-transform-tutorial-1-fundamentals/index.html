@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Fourier Transform Tutorial 1</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width">
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script> <!-- plotly-->
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script> <!-- latex style math notation-->
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<!-- Add icon library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+#logoBG{
+  width:99%;
+  height:40px;
+  background: #edede8ff;
+  position: absolute;
+  top: 0.5%;
+}
+
+.logo {
+  display: block;
+  position: absolute;
+  margin-left: 50%;
+  margin-right: 50%;
+  top: 0.5%;
+  transform: translateX(-50%); /*use center anchor point along x axis*/
+  z-index: 1;
+}
+
+h2 {
+  margin-bottom: 0;
+}
+
+#chapter-container{
+  width: 100vw;
+  margin-bottom: 20px;
+  padding-top: 80px;
+  position: relative;
+}
+
+#chapter {
+  float: left;
+  max-width: 70vw;
+  margin-right: 50px;
+  margin-bottom: 30px;
+}
+
+#cont {
+  float: left;
+  position: relative;
+}
+
+.tooltip {
+  font-size: 50px;
+  cursor: pointer;
+  
+  position: absolute;
+  left: 0%;
+  bottom: 0%;
+  /*positioning is handled via JS */
+  
+  /* make tooltip non-selectable*/
+  -webkit-touch-callout: none;
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none; 
+            user-select: none; 
+}
+
+.tooltiptext {
+  font-size: 20px;
+  width: 60vw;
+  background-color: #555;
+  color: #fff;
+  text-align: justify;
+  border-radius: 6px;
+  padding: 10px 10px;
+  
+  position: absolute;
+  z-index: 2;
+  
+  left: 50%;
+  /*positioning (translation) is handled via JS */
+
+  opacity: 0;
+  display: none;
+  transition: opacity 0.3s;
+}
+
+#content-container {
+  height: 70vh;
+  width: 100%; 
+}
+
+#equation-container {
+  width: 60vw;
+  min-width: 500px;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 80px;
+}
+
+#focus-part {
+  color: #37648cfb;
+  font-size: 40px;
+  width: 200px;
+  margin: auto;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  text-align: center;
+  border: 3px solid;
+}
+
+.plot {
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+/*-----graph settings-----*/
+text.top-right-legend {
+  display: none;
+}
+
+g.tip {
+  display: none;
+}
+
+/*-----canvas settings-----*/
+canvas {
+  display: block;
+  margin: 0 auto;
+  border: 1px solid;
+  /* Width+Positioning is handled via JS*/
+}
+
+/*-----frequency slider-----*/
+#slider-container {
+  width: 33%;
+  margin: auto;
+  padding-top: 20px;
+}
+
+.sliderText {
+  width: 100%;
+  text-align: center;
+}
+
+input.range {
+  -webkit-appearance: none;
+  bottom: -10px;
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+input.range:focus {
+  outline: 0;
+}
+input.range::-moz-focus-outer {
+  border: 0;
+}
+
+input.range::-webkit-slider-thumb {
+  box-shadow: 1px 1px 1px black, 0px 0px 1px black;
+  border: 0;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -7.5px;
+}
+ 
+input.range::-moz-range-thumb {
+  box-shadow: 1px 1px 1px black, 0px 0px 1px black;
+  border: 0;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+}
+input.range::-ms-thumb {
+  box-shadow: 1px 1px 1px black, 0px 0px 1px black;
+  border: 0;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+  height: 5px;
+}
+
+input.range::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 5px;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0), 0px 0px 1px rgba(13, 13, 13, 0);
+  background: grey;
+  border-radius: 20px;
+  border: 0;
+}
+ 
+input.range::-moz-range-track {
+  width: 100%;
+  height: 5px;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0), 0px 0px 1px rgba(13, 13, 13, 0);
+  background: grey;
+  border-radius: 20px;
+  border: 0;
+}
+ 
+input.range::-ms-track {
+  width: 100%;
+  height: 5px;
+  cursor: pointer;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+
+input.range::-ms-fill-lower,
+input.range::-ms-fill-upper {
+  background: grey;
+  border: 0;
+  border-radius: 40px;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0), 0px 0px 1px rgba(13, 13, 13, 0);
+}
+
+.range__tick {
+  fill: #a0a0a0;
+}
+
+.range__tick:first-child {
+  -webkit-transform: translateX(2px);
+  -moz-transform: translateX(2px);
+  -ms-transform: translateX(2px);
+  -o-transform: translateX(2px);
+  transform: translateX(2px);
+}
+.range__tick:last-child {
+  -webkit-transform: translateX(-3px);
+  -moz-transform: translateX(-3px);
+  -ms-transform: translateX(-3px);
+  -o-transform: translateX(-3px);
+  transform: translateX(-3px);
+}
+
+.range__field {
+  border: 0;
+}
+
+/*-----pagination-----*/
+.center {
+  text-align: center;
+  padding-top: 50px;
+  padding-bottom: 25px;
+}
+
+.pagination {
+  display: inline-block;
+}
+
+.pagination a {
+  color: black;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+.pagination a.active {
+  background-color: #1c33c7ff;
+  color: white;
+}
+
+.pagination a:hover:not(.active) {
+background-color: #ddd;
+}
+</style>
+</head>
+<body>
+
+<div id="logoBG">
+  <a href="../index.html"><img src="../img/getlab-logo.png" alt="GETLab-Logo" class="logo"></a>
+</div>
+
+<div id="chapter-container">
+    <div id="chapter">
+        <h1>Tutorial 1: Fundamentals</h1>
+        <h2>Inspecting Euler's Formula: The Fourier Transform Has a Real and an Imaginary Component.</h2>
+    </div>
+    
+    <div id="cont">
+    <div class="tooltip" onclick="ToggleDescription()">&#x1F4A1;</div>
+    </div>
+    
+    <span class="tooltiptext">
+    We begin with the definition of the Fourier transform: \(F(u) = \displaystyle \int\limits_{-\infty}^{+\infty} f(x)\,e^{-j\,2\pi ux}\, \mathrm{d}x\).
+    <br><br>
+    To compute the Fourier transform of a function \(f(x)\), at first we have to multiply \(f(x)\) by \(e^{-j\,2\pi ux}\) and then integrate the result from \(-\infty\) to \(+\infty\). At the moment we will focus only on the <b>complex exponential function</b>. According to <i>Euler's formula</i>, \(e^{-j\,2\pi ux}\) is associated with a real (cosine) and an imaginary (sine) component. In other words, the multiplication by \(e^{-j\,2\pi ux}\) means multiplication of \(f(x)\) with a real cosine function and an imaginary sine function which are shown below. 
+    <br><br>
+    Move the slider to vary the frequency \(u\) of the complex exponential function. As you go from negative to positive frequencies, the behaviour of the cosine function does not change because it is an <b>even</b> function. However, the sine function flips because it is an <b>odd</b> function. These properties are important to consider when dealing with the Fourier transform. Furthermore, in digital image processing we usually work with color values of pixels. For this reason a color coded visualization of the cosine and sine wave is depicted as well. 
+    <br><br>
+    <u>Note</u>: Usually pixel values are integers that range from 0 (black) to 255 (white). Here, black is represented as -1 or -j and white as +1 or +j.
+    </span>
+</div>
+
+<div id="equation-container">   
+  <img src="../img/tut1-ft-euler.svg" alt="Fourier Transform + Euler's Equation" width="100%">
+</div>
+
+<div id="focus-part">
+  e<sup style="font-size:30px;">&#8201;<span id="e-superscript"></span></sup>
+</div>
+<br><br>
+<div id="content-container">
+	<div id="graph_rp" class="plot"><!-- RP graph will be drawn inside this DIV --></div>
+	<br>
+	<canvas id="cosC" height="50" width="1000"></canvas>
+	<br><br><br><br>
+    <div id="graph_ip" class="plot"><!-- IP graph will be drawn inside this DIV --></div>
+    <br>
+  	<canvas id="sinC" height="50" width="1000"></canvas>
+</div>
+
+    <div id="slider-container">
+        <fieldset class="range__field">
+        <div class="sliderText">Frequency<br>\(u=\) <span id="freq-value"></span></div>
+        <input class="range" type="range" min="-16" max="16" value="1" step="any" id="frequency-slider" list="snap">
+        <svg role="presentation" width="100%" height="10">
+            <rect class="range__tick" x="0%" y="3" width="1" height="10"></rect>
+            <rect class="range__tick" x="25%" y="3" width="1" height="10"></rect>
+            <rect class="range__tick" x="50%" y="3" width="1" height="10"></rect>
+            <rect class="range__tick" x="75%" y="3" width="1" height="10"></rect>
+            <rect class="range__tick" x="100%" y="3" width="1" height="10"></rect>
+        </svg>
+        <svg role="presentation" width="100%" height="14">
+            <text class="range__point" x="0%" y="14" text-anchor="start">-16 Hz</text>
+            <text class="range__point" x="25%" y="14" text-anchor="middle">-8 Hz</text>
+            <text class="range__point" x="50%" y="14" text-anchor="middle">0 Hz</text>
+            <text class="range__point" x="75%" y="14" text-anchor="middle">8 Hz</text>
+            <text class="range__point" x="100%" y="14" text-anchor="end">16 Hz</text>
+        </svg>
+        </fieldset>
+        
+        <datalist id="snap">
+          <option value="0.1">
+        </datalist>
+    </div>
+
+<div class="center">
+  <div class="pagination">
+    <a href="../index.html"><i class="fa fa-home"></i></a>
+    <a href="#">&laquo;</a>
+    <a class="active" href="#">1</a>
+    <a href="p2.html">2</a>
+    <a href="p3.html">3</a>
+    <a href="p2.html">&raquo;</a>
+  </div>
+</div>
+
+<script>
+// set height of tooltip container to height of chapter. 
+var tooltipcont = document.getElementById("cont");
+var chHeight = document.getElementById("chapter").clientHeight;
+tooltipcont.style.height = chHeight-5 + "px";
+
+// move tooltiptext down by chapter height
+var tooltiptext = document.getElementsByClassName("tooltiptext")[0];
+tooltiptext.style.transform = `translate(-30vw, ${chHeight+10}px)`;
+
+// set width and position of canvas in relation to plots
+var graphWidth = document.getElementById("graph_rp").clientWidth;
+var canvasCos = document.getElementById("cosC");
+var canvasSin = document.getElementById("sinC");
+
+canvasCos.style.width = graphWidth - 60 + "px";
+//canvasCos.style.transform = "translateX(12.5px)";
+canvasSin.style.width = graphWidth - 60 + "px";
+//canvasSin.style.transform = "translateX(12.5px)";
+
+var tooltip = document.getElementsByClassName("tooltip")[0];
+var slider = document.getElementById("frequency-slider");
+var u = slider.value; // initial value for u (frequency)
+var freqValuehtml = document.getElementById("freq-value");
+var sign = "-";
+var esup = document.getElementById("e-superscript");
+var resolution = 0.01;
+
+// graph settings + initial plots --------------------------------------------------
+const [layout, config] = plotlyOptions();
+const layoutIM = JSON.parse(JSON.stringify(layout));
+
+layout.title = {text: `cos(${sign}2\u03C0\u00B7${parseFloat(u).toFixed(2)}x)`,
+                font: {size: 24}
+                };
+
+layoutIM.yaxis.ticktext = ['-j', '0', 'j'];
+layoutIM.title = {text: `j\u2009sin(${sign}2\u03C0\u00B7${parseFloat(u).toFixed(2)}x)`,
+                  font: {size: 24}
+                  }; 
+
+
+// Generate values
+var [dataRP, dataIP] = generateData();
+var yValsRP, yValsIP;
+
+drawGraphs();
+
+// dynamic text
+esup.innerHTML = `${sign}j\u20092\u03C0\u2009${parseFloat(u).toFixed(2)}x`;
+freqValuehtml.innerHTML = parseFloat(u).toFixed(2) + ' Hz';
+
+// cosine/sine visualization as pixel colors
+drawCanvas(canvasCos, Math.cos);
+drawCanvas(canvasSin, Math.sin);
+
+// update graphs according to slider
+slider.oninput = function() {
+  u = this.value;
+
+  [yValsRP, yValsIP] = updateData();
+  
+  updateHTML(u);
+  
+  Plotly.restyle('graph_rp', 'y', [yValsRP]);
+  Plotly.restyle('graph_ip', 'y', [yValsIP]);
+  
+  drawCanvas(canvasCos, Math.cos);
+  drawCanvas(canvasSin, Math.sin);
+}
+
+// functions --------------------------------------------------
+function ToggleDescription() {
+  if (tooltiptext.style.opacity == 1)
+    {
+    tooltiptext.style.opacity = 0;
+    tooltiptext.style.display = "none";
+    //tooltip.classList.remove("active");
+    }
+  else
+    {
+    tooltiptext.style.display = "block";
+    tooltiptext.style.opacity = 1;
+    //tooltip.classList.add("active");
+    }
+  return
+}
+
+function drawGraphs() {
+  Plotly.newPlot("graph_rp", dataRP, layout, config);
+  Plotly.newPlot("graph_ip", dataIP, layoutIM, config);
+}
+
+function drawCanvas(canvas, evaluateFunction) {
+  var ctx = canvas.getContext("2d");
+  let value, color, xCoord;
+  
+  // clear canvas to remove weird artifacts, which probably result from setting line width
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  ctx.lineWidth = 1;
+  
+  for (let x = -5; x < 5; x += 1/100) {
+    value = evaluateFunction(-2*Math.PI*u*x); 
+    
+    // convert values from [-1,1] to [0,255] (grayscale values)
+    color = 255*((value+1)/2);
+    
+    xCoord = parseInt(100*(x+5));
+    
+    // draw path
+    ctx.beginPath();
+    ctx.strokeStyle = `rgb(${color}, ${color}, ${color})`;
+    ctx.moveTo(xCoord,0);
+    ctx.lineTo(xCoord,50);
+    ctx.stroke();
+  }
+}
+
+function updateHTML(arg) {
+  
+  // check sign of u to display title of graphs correctly
+  if (arg > 0) {
+    sign = "-";
+  } else {
+    sign = "";
+  }
+  
+  esup.innerHTML = `${sign}j\u20092\u03C0\u2009${Math.abs(parseFloat(u).toFixed(2))}x`;
+  freqValuehtml.innerHTML = parseFloat(u).toFixed(2) + ' Hz';
+  
+  layoutIM.title.text = `j\u2009sin(${sign}2\u03C0\u00B7${Math.abs(parseFloat(u).toFixed(2))}x)`;
+  layout.title.text = `cos(${sign}2\u03C0\u00B7${Math.abs(parseFloat(u).toFixed(2))}x)`;
+}
+
+function plotlyOptions() {
+  let col = '#ebebeb';
+
+  let L = {
+  height: document.getElementById("content-container").clientHeight/3,
+  margin: {
+    l: 30,
+    r: 30,
+    b: 20,
+    t: 40,
+    pad: 0
+  },
+  xaxis: {
+    range: [-5, 5],
+    mirror: true,
+    
+    linecolor: col,
+    showline: true,
+    linewidth: 1,  
+    
+    zeroline: true,
+    zerolinewidth: 1,
+    zerolinecolor: col,
+    
+    showgrid: true,
+    gridwidth: 1,
+    gridcolor: col
+  },
+  yaxis: {
+    range: [-1, 1],
+    tickvals: [-1, 0, 1],
+    mirror: true,
+    
+    linecolor: col,
+    showline: true,
+    linewidth: 1,  
+    
+    zeroline: true,
+    zerolinewidth: 1,
+    zerolinecolor: col,
+    
+    showgrid: true,
+    gridwidth: 1,
+    gridcolor: col
+  },
+    showlegend: false
+    }
+  
+  let conf = {
+  staticPlot: true
+  }
+  return [L, conf]
+}
+
+function mathFuncRP(u, x) {
+  return Math.cos(-2 * Math.PI * u * x)
+}
+
+function mathFuncIP(u, x) {
+  return Math.sin(-2 * Math.PI * u * x)
+}
+
+function generateData() {
+// generate arrays used to plot functions with plotly
+
+  let xValues = [];
+  let yValuesRP = [];
+  let yValuesIP = [];
+  
+  // calculate input signal
+  for (let x = -5; x <= 5; x += resolution) {
+    xValues.push(x);
+    yValuesRP.push(mathFuncRP(u, x));
+    yValuesIP.push(mathFuncIP(u, x));
+  }
+  
+  // prepare data for plotly
+  
+  let traceRP, dataRP, traceIP, dataIP;
+  
+  // lines
+  traceRP = {x:xValues, y:yValuesRP, mode:"lines"};
+  traceIP = {x:xValues, y:yValuesIP, mode:"lines", line: {color: "red"}};
+  
+  dataRP = [traceRP];
+  dataIP = [traceIP];
+  
+  return [dataRP, dataIP]
+}
+
+function updateData() {
+// update arrays used to plot functions with plotly
+  let yValuesRP = [];
+  let yValuesIP = [];
+  
+  // calculate input signal
+  for (let x = -5; x <= 5; x += resolution) {
+    yValuesRP.push(mathFuncRP(u, x));
+    yValuesIP.push(mathFuncIP(u, x));
+  }
+  
+  return [yValuesRP, yValuesIP]
+}
+</script>
+
+</body>
+</html>
+
