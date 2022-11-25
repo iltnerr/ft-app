@@ -419,7 +419,7 @@ background-color: #ddd;
       <div id="slider-container">
         <fieldset class="range__field">
         <div class="sliderText">Frequency<br>\(u=\) <span id="freq-value"></span></div>
-        <input class="range" type="range" min="-8" max="8" value="1" step="any" id="frequency-slider">
+        <input class="range" type="range" min="-8" max="8" value="1" step="any" id="frequency-slider" list="snap-freq">
         <svg role="presentation" width="100%" height="10">
             <rect class="range__tick" x="0%" y="3" width="1" height="10"></rect>
             <rect class="range__tick" x="25%" y="3" width="1" height="10"></rect>
@@ -435,6 +435,10 @@ background-color: #ddd;
             <text class="range__point" x="100%" y="14" text-anchor="end">8 Hz</text>
         </svg>
         </fieldset>       
+        
+        <datalist id="snap-freq">
+          <option value="0">
+        </datalist>
     </div>
 </div>
 
