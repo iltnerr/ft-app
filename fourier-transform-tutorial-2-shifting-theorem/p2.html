@@ -106,6 +106,17 @@ h2 {
   margin-left: 12.5%;
 }
 
+#CenterShiftSliderBTN {
+  text-align: center;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+.setShiftSliderBTN {
+  display: inline-block;
+  margin: auto;
+}
+
 .sliderText {
   width: 100%;
   text-align: center;
@@ -166,7 +177,6 @@ g.tip {
   z-index: 1;
   background-color: white;
   border: solid 1px;
-  width: 140px;
   text-align: center;
   padding: 2px;
 }
@@ -288,6 +298,11 @@ input.range::-ms-fill-upper {
   border: 0;
 }
 
+.setFreqSliderBTN {
+  display: block;
+  margin: auto;
+}
+
 /*-----pagination-----*/
 .center {
   text-align: center;
@@ -333,11 +348,11 @@ background-color: #ddd;
     </div>
     
     <span class="tooltiptext">
-    According to the shifting theorem, if the Fourier transform \(F(u)\) of a function \(f(x)\) is known, the Fourier transform of the shifted function \(f(x-x_0)\) can be obtained by multiplying \(F(u)\) by \(e^{-j\,2\pi ux_0}\). This means multiplication by a real cosine and an imaginary sine term which depend on the amount of the shift \(x_0\). 
+    According to the Shifting Theorem, if the Fourier transform \(F(u)\) of a function \(f(x)\) is known, the Fourier transform of the shifted function \(f(x-x_0)\) can be obtained by multiplying \(F(u)\) by \(e^{-j\,2\pi ux_0}\). This means multiplication by a real cosine and an imaginary sine term which depend on the amount of the shift \(x_0\). 
     <br><br>
-    The left side shows \(f(x-x_0)\) and the corresponding cosine and sine function regarding the shifting theorem, \(\cos(-2\pi u x_0)\) and \(j\sin(-2\pi u x_0)\). They should not be confused with the cosine and the sine component of \(e^{-j\,2\pi ux}\) which appears in the definition of the Fourier transform. Also, note that in this case the cosine and the sine function are depicted in the <b>frequency domain</b> because they are multiplied with \(F(u)\) as opposed to the ones before where we multiplied \(f(x)\) by a cosine and sine function in the <b>spatial domain</b>.
+    The left side shows \(f(x-x_0)\) and the corresponding cosine and sine function regarding the shifting theorem, \(\cos(2\pi u x_0)\) and \(j\sin(-2\pi u x_0)\). They should not be confused with the cosine and the sine component of \(e^{-j\,2\pi ux}\) which appears in the definition of the Fourier transform. Also, note that in this case the cosine and the sine function are depicted in the <b>frequency domain</b> because they are multiplied with \(F(u)\) as opposed to the ones before where we multiplied \(f(x)\) by a cosine and sine function in the <b>spatial domain</b>.
     <br><br>    
-    In order to visualize the shifting theorem, the top graph on the right shows the Fourier transform of the rectangular function \(f(x)\) without a spatial shift. As you shift \(f(x)\), you may compare the Fourier transform for the shifted rectangular function with the original one. The more \(f(x)\) is shifted, the better the multiplication with the cosine and the sine function may be observed.
+    In order to visualize the Shifting Theorem, the top graph on the right shows the Fourier transform of the rectangular function \(f(x)\) without a spatial shift. As you shift \(f(x)\), you may compare the Fourier transforms for the shifted and the non-shifted function. The more \(f(x)\) is shifted, the better the multiplication with the cosine and the sine function may be observed.
     </span>
 </div>
 
@@ -346,7 +361,7 @@ background-color: #ddd;
 <div id="shift-container">
         <fieldset class="range__field">
         <div class="sliderText">Spatial Shift<br>\(x_0=\) <span id="shift-value"></span></div>
-        <input class="range" type="range" min="-2" max="2" value="0" step="any" id="shift-slider" list="snap">
+        <input class="range" type="range" min="-2" max="2" value="0" step="any" id="shift-slider">
         <svg role="presentation" width="100%" height="10">
             <rect class="range__tick" x="0%" y="3" width="1" height="10"></rect>
             <rect class="range__tick" x="25%" y="3" width="1" height="10"></rect>
@@ -363,15 +378,11 @@ background-color: #ddd;
         </svg>
         </fieldset>
         
-        <datalist id="snap">
-          <option value="-1.5">
-          <option value="-1">
-          <option value="-0.5">
-          <option value="0">
-          <option value="0.5">
-          <option value="1">
-          <option value="1.5">
-        </datalist>
+        <div id="CenterShiftSliderBTN">
+            <button class="setShiftSliderBTN" type="button" onclick="setShiftSlider('-1')">\(x_0=\) -1</button>
+            <button class="setShiftSliderBTN" type="button" onclick="setShiftSlider('0')">\(x_0=\) 0</button>
+            <button class="setShiftSliderBTN" type="button" onclick="setShiftSlider('1')">\(x_0=\) 1</button>
+        </div>
 </div>
   
 <div id="content-container">
@@ -379,8 +390,12 @@ background-color: #ddd;
 	<div class="plot" id="graph_signal"><!-- graph will be drawn inside this DIV -->
 	  <span class="graph_label" style="width:70px;">\(f(x-x_0)\)</span>
 	</div>
-    <div class="plot" id="graph_rp"><!-- graph will be drawn inside this DIV --></div>
-    <div class="plot" id="graph_ip"><!-- graph will be drawn inside this DIV --></div>
+    <div class="plot" id="graph_rp"><!-- graph will be drawn inside this DIV -->
+      <span class="graph_label">\( \cos(2\pi\,ux_0) \)</span>
+    </div>
+    <div class="plot" id="graph_ip"><!-- graph will be drawn inside this DIV -->
+      <span class="graph_label">\( j\sin(-2\pi\,ux_0) \)</span>
+    </div>
   </div>
   
   <div class="column">
@@ -404,7 +419,7 @@ background-color: #ddd;
     <div id="slider-container">
         <fieldset class="range__field">
         <div class="sliderText">Frequency<br>\(u=\) <span id="freq-value"></span></div>
-        <input class="range" type="range" min="-16" max="16" value="1" step="any" id="frequency-slider" list="snap-freq">
+        <input class="range" type="range" min="-16" max="16" value="1" step="any" id="frequency-slider">
         <svg role="presentation" width="100%" height="10">
             <rect class="range__tick" x="0%" y="3" width="1" height="10"></rect>
             <rect class="range__tick" x="25%" y="3" width="1" height="10"></rect>
@@ -421,9 +436,7 @@ background-color: #ddd;
         </svg>
         </fieldset>
         
-        <datalist id="snap-freq">
-          <option value="0">
-        </datalist>
+        <button class="setFreqSliderBTN" type="button" onclick="setFreqSlider()">\(u=\) 0 Hz</button>
   </div>
 
 <div class="center">
@@ -519,6 +532,16 @@ shiftSlider.oninput = function() {
 }
 
 // functions --------------------------------------------------
+function setFreqSlider() {
+  slider.value = "0";
+  slider.oninput();
+}
+
+function setShiftSlider(val) {
+  shiftSlider.value = val;
+  shiftSlider.oninput();
+}
+
 function drawGraphs() {
   Plotly.newPlot("graph_signal", dataSignal, layout, config);
   Plotly.newPlot("graph_rp", dataRP, layoutFT, config);
@@ -712,8 +735,8 @@ function generateData() {
   trace2FTIP = {x:[uValues[sliderCurrent]], y:[yValuesFTIP[sliderCurrent]], mode:"markers", marker:{color: 'red', size:10, opacity:0.8}};
   trace2FTRPnoshift = {x:[uValues[sliderCurrent]], y:[yValuesFTRPnoshift[sliderCurrent]], mode:"markers", marker:{color: 'red', size:10, opacity:0.8}};
   
-  dataRP = [{x:uValues, y:yValuesRP, mode:"lines"}];
-  dataIP = [{x:uValues, y:yValuesIP, mode:"lines", line: {color: 'red'}}];
+  dataRP = [{x:uValues, y:yValuesRP, mode:"lines", line: {color: "black"}}];
+  dataIP = [{x:uValues, y:yValuesIP, mode:"lines", line: {color: 'black'}}];
   dataFTRP = [trace1FTRP, trace2FTRP];
   dataFTIP = [trace1FTIP, trace2FTIP];
   dataFTRPnoshift = [trace1FTRPnoshift, trace2FTRPnoshift];

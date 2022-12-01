@@ -305,9 +305,9 @@ background-color: #ddd;
     </div>
     
     <span class="tooltiptext">
-      In this tutorial we are going to approach the concept of the <i>Dirac delta</i> function step by step. To this end we consider \(f(x)\) to be a <b>sinusoidal wave</b> of the shape \(f(x) = \cos(\omega_0 x - x_0)\) where \(\omega_0 = 2\pi\beta\) and \(\beta\) is some fixed frequency. Keep in mind that any sine function may always be represented by a shifted cosine function and vice versa.
+      In this tutorial the concept of the <i>Dirac delta</i> function will be approached step by step. To this end, \(f(x)\) is considered to be a sinusoidal wave of the shape \(f(x) = \cos(\omega_0 x - x_0)\) where \(\omega_0 = 2\pi\beta\) with some fixed frequency \(\beta\). Keep in mind that any sine function may be described by a shifted cosine function and vice versa.
       <br><br>
-      For now we consider \(f(x)\) to be a cosine function with no shift: \(f(x)=\cos(\omega_0 x)\). On the next pages we will continue by determining the Fourier transform for such a sinusoidal wave. 
+      For now \(f(x)\) is considered to be a cosine function with no shift: \(f(x)=\cos(\omega_0 x)\). The next pages will illustrate important aspects for the Fourier transform of such a sinusoidal wave. 
     </span>
 </div>
 
@@ -477,7 +477,7 @@ function generateData() {
   let traceInput, dataInput;
   
   // lines
-  traceInput = {x:xValues, y:yValues, mode:"lines"};
+  traceInput = {x:xValues, y:yValues, mode:"lines", line: {color: "black"}};
   
   dataInput = [traceInput];
   

@@ -101,7 +101,7 @@ h4 {
   align-items: center;
 }
 
-button {
+.setFunctionBTN {
   width: 100px;
   height: 30px;
   margin-left: 10px;
@@ -171,7 +171,6 @@ g.tip {
   z-index: 1;
   background-color: white;
   border: solid 1px;
-  width: 180px;
   text-align: center;
   padding: 2px;
 }
@@ -293,6 +292,11 @@ input.range::-ms-fill-upper {
   border: 0;
 }
 
+#setSlider {
+  display: block;
+  margin: auto;
+}
+
 /*-----pagination-----*/
 .center {
   text-align: center;
@@ -338,7 +342,7 @@ background-color: #ddd;
     </div>
     
     <span class="tooltiptext">
-    The last page of this tutorial applies the ideas you have learned so far to other even functions. That is, the triangular, sinc and gaussian function. 
+    The last page of this tutorial applies the ideas you have learned so far to other even functions. That is, the triangular, sinc and gaussian function. Again, the Fourier transforms depicted here have no imaginary component, since the functions are even. 
     <u><h4>Interesting aspects to consider</h4></u>
     <ul>
     <li>The Fourier transform of a <b>rectangular</b> function is a <b>sinc</b> function.</li>
@@ -346,15 +350,14 @@ background-color: #ddd;
     <li>The Fourier transform of a <b>triangular</b> function is a <b>squared sinc</b> function.</li>
     <li>The Fourier transform of a <b>gaussian</b> function is a <b>gaussian</b> function.</li>
     </ul>
-    Also, remember that the Fourier transforms depicted here have no imaginary component, since we are still dealing with even functions.
     </span>
 </div>
 
 <div id="header-container">
-  <button type="button" onclick="selectFunction('rectangle')">Rectangle</button>
-  <button type="button" onclick="selectFunction('triangle')">Triangle</button>
-  <button type="button" onclick="selectFunction('sinc')">Sinc</button>
-  <button type="button" onclick="selectFunction('gaussian')">Gaussian</button>
+  <button class="setFunctionBTN" type="button" onclick="selectFunction('rectangle')">Rectangle</button>
+  <button class="setFunctionBTN" type="button" onclick="selectFunction('triangle')">Triangle</button>
+  <button class="setFunctionBTN" type="button" onclick="selectFunction('sinc')">Sinc</button>
+  <button class="setFunctionBTN" type="button" onclick="selectFunction('gaussian')">Gaussian</button>
 </div>
 
 <div id="content-container">
@@ -362,31 +365,35 @@ background-color: #ddd;
 	<div class="plot" id="graph_signal"><!-- graph will be drawn inside this DIV -->
 	  <span class="graph_label" style="width:50px;">\(f(x)\)</span>
 	</div>
-    <div class="plot" id="graph_rp"><!-- graph will be drawn inside this DIV --></div>
-    <div class="plot" id="graph_ip"><!-- graph will be drawn inside this DIV --></div>
+    <div class="plot" id="graph_rp"><!-- graph will be drawn inside this DIV -->
+      <span class="graph_label" style="width:100px;">\(\cos(2\pi\,ux)\)</span>
+    </div>
+    <div class="plot" id="graph_ip"><!-- graph will be drawn inside this DIV -->
+      <span class="graph_label" style="width:100px;">\(j\sin(-2\pi\,ux)\)</span>
+    </div>
   </div>
   
   <div class="column">
 	<div class="plot" id="graph_ft_real"><!-- graph will be drawn inside this DIV -->
 	  <span class="graph_annotation"><span id="ftRP_values"></span></span>
-	  <span class="graph_label">\(F(u)_{\mathrm{real}} \text{ vs. frequency}\)</span>
+	  <span class="graph_label">\(F(u)\)</span>
 	</div>
     
     <div class="plot" id="graph_rp_area"><!-- graph will be drawn inside this DIV -->
       <span class="graph_annotation">Area = <span id="areaRP"></span></span>
-      <span class="graph_label">\(\displaystyle \int f(x)\cdot \cos(2\pi\,ux)\,\mathrm{d}x\)</span>
+      <span class="graph_label">\(\displaystyle \int_{-\infty}^{\infty} f(x)\cdot \cos(2\pi\,ux)\,\mathrm{d}x\)</span>
     </div>
     
     <div class="plot" id="graph_ip_area"><!-- graph will be drawn inside this DIV -->
       <span class="graph_annotation">Area = 0.00</span> 
-      <span class="graph_label">\(\displaystyle \int f(x)\cdot j\sin(2\pi\,ux)\,\mathrm{d}x\)</span>
+      <span class="graph_label">\(\displaystyle \int_{-\infty}^{\infty} f(x)\cdot j\sin(-2\pi\,ux)\,\mathrm{d}x\)</span>
     </div>
   </div>
   </div>
 <div id="slider-container">
         <fieldset class="range__field">
         <div class="sliderText">Frequency<br>\(u=\) <span id="freq-value"></span></div>
-        <input class="range" type="range" min="-16" max="16" value="1" step="any" id="frequency-slider" list="snap">
+        <input class="range" type="range" min="-16" max="16" value="1" step="any" id="frequency-slider">
         <svg role="presentation" width="100%" height="10">
             <rect class="range__tick" x="0%" y="3" width="1" height="10"></rect>
             <rect class="range__tick" x="25%" y="3" width="1" height="10"></rect>
@@ -402,10 +409,7 @@ background-color: #ddd;
             <text class="range__point" x="100%" y="14" text-anchor="end">16 Hz</text>
         </svg>
         </fieldset>
-        
-        <datalist id="snap">
-          <option value="0">
-        </datalist>
+        <button id="setSlider" type="button" onclick="setSlider()">\(u=\) 0 Hz</button>
 </div>
 
 <div class="center">
@@ -481,6 +485,11 @@ slider.oninput = function() {
 }
 
 // functions --------------------------------------------------
+function setSlider() {
+  slider.value = "0";
+  slider.oninput();
+}
+
 function drawGraphs() {
   Plotly.newPlot("graph_signal", dataSignal, layout, config);
   Plotly.newPlot("graph_ip", dataIP, layoutImAxes, config);
@@ -642,7 +651,7 @@ function mathGaussian(x) {
 }
 
 function mathFuncRP(x) {
-  return Math.cos(-2 * Math.PI * u * x)
+  return Math.cos(2 * Math.PI * u * x)
 }
 
 function mathFuncIP(x) {
@@ -654,7 +663,7 @@ function ftRP (u) {
 calculate the real part of the FT of the input signal. 
 this is done by calculating the area under the RP curve over the frequency domain (u).
 */
-  let mathFuncRP = function (x) {return Math.cos(-2 * Math.PI * u * x)}
+  let mathFuncRP = function (x) {return Math.cos(2 * Math.PI * u * x)}
   let total = 0
   let step, f, low, high
   
@@ -742,9 +751,9 @@ function generateData() {
   }
   
   dataSignal = [{x:xValues, y:yValuesSignal, mode:"lines", line: {color: "black"}}];
-  dataRP = [{x:xValues, y:yValuesRP, mode:"lines"}];
+  dataRP = [{x:xValues, y:yValuesRP, mode:"lines", line: {color: "blue"}}];
   dataIP = [{x:xValues, y:yValuesIP, mode:"lines", line: {color: "red"}}];
-  dataRPA = [{x:xValues, y:yValuesRPA, mode:"lines", fill: "tozeroy"}];
+  dataRPA = [{x:xValues, y:yValuesRPA, mode:"lines", fill: "tozeroy", line: {color: "blue"}}];
   dataIPA = [{x:xValues, y:yValuesIPA, mode:"lines", fill: "tozeroy", line: {color: 'red'}}];
   
   // calculate fourier transform

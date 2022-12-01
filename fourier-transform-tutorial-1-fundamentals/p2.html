@@ -166,7 +166,6 @@ g.tip {
   z-index: 1;
   background-color: white;
   border: solid 1px;
-  width: 180px;
   text-align: center;
   padding: 2px;
 }
@@ -288,6 +287,11 @@ input.range::-ms-fill-upper {
   border: 0;
 }
 
+#setSlider {
+  display: block;
+  margin: auto;
+}
+
 /*-----pagination-----*/
 .center {
   text-align: center;
@@ -333,13 +337,13 @@ background-color: #ddd;
     </div>
     
     <span class="tooltiptext">
-    Now we are going to compute the Fourier transform of a rectangular function \(f(x)\). To do this, at first we have to multiply \(f(x)\) with \(e^{-j\,2\pi ux}\). As we saw on the first page, this means multiplicating \(f(x)\) with a real cosine and an imaginary sine function. All three functions are shown on the left side. 
+    Now we are going to compute the Fourier transform of a rectangular function \(f(x)\). To do this, at first \(f(x)\) has to be multiplied by \(e^{-j\,2\pi ux}.\) As we saw on the first page, this means multiplying \(f(x)\) with a real cosine and an imaginary sine function. All three functions are shown on the left side. 
     <br>
-    Then, for a specific frequency the Fourier transform is computed by integrating the product \(f(x)\cdot e^{-j\,2\pi ux}\). Therefore, the real and imaginary part of the Fourier transform are given by the area under the resulting curves which are shown on the right side.
+    Then, for a specific frequency the Fourier transform \( F(u) \) is computed by integrating the product \(f(x)\cdot e^{-j\,2\pi ux}\) from \(-\infty\) to \(\infty\). Therefore, the real and imaginary part of the Fourier transform are given by the area under the resulting curves which are shown on the right side.
     <br><br>
-    In order to compute the Fourier transform, move the slider over the frequency domain which is limited to -16 Hz and +16 Hz in this case. As you do this, compare the area under the blue curve on the right with the values of \(F(u)_{\mathrm{real}}\) for different frequencies. 
+    In order to compute the Fourier transform, move the frequency slider which ranges from -16 Hz to 16 Hz here. As you do this, compare the area under the blue curve on the right with the values of \(F(u)_{\mathrm{real}}\) for different frequencies. 
     <br><br>
-    In general, the Fourier transform consists of a real and an imaginary component. Here, the Fourier transform has no imaginary component due to the fact that the rectangular function is an even function. This can be seen by observing the area under the red curve on the right for different frequencies. The imaginary part is <b>always</b> zero because the area on the positive and the negative side cancel each other out. This is true for any even function, not just the rectangular function. 
+    In general, the Fourier transform consists of a real and an imaginary component. Here, the Fourier transform has no imaginary component due to the fact that the rectangular function is an even function. This can be seen by observing the area under the red curve on the right for different frequencies. The imaginary part is <b>always zero</b> because the area on the positive and the negative side cancel each other out. This is true for any even function, not just the rectangular function. 
     </span>
 </div>
 
@@ -359,7 +363,7 @@ background-color: #ddd;
   </div>
   
   <div class="header">
-    In this case:<br>\(F(u)_{\mathrm{real}} = F(u)\)<br>\(F(u)_{\mathrm{imag}} = 0\)
+    In this case:<br>\( F(u) = F(u)_{\mathrm{real}} \)<br>\(F(u)_{\mathrm{imag}} = 0\)
   </div>
   
 </div>
@@ -369,24 +373,28 @@ background-color: #ddd;
 	<div class="plot" id="graph_signal"><!-- graph will be drawn inside this DIV -->
 	  <span class="graph_label" style="width:50px;">\(f(x)\)</span>
 	</div>
-    <div class="plot" id="graph_rp"><!-- graph will be drawn inside this DIV --></div>
-    <div class="plot" id="graph_ip"><!-- graph will be drawn inside this DIV --></div>
+    <div class="plot" id="graph_rp"><!-- graph will be drawn inside this DIV -->
+      <span class="graph_label" style="width:100px;">\(\cos(2\pi\,ux)\)</span>
+    </div>
+    <div class="plot" id="graph_ip"><!-- graph will be drawn inside this DIV -->
+      <span class="graph_label" style="width:100px;">\(j\sin(-2\pi\,ux)\)</span>
+    </div>
   </div>
   
   <div class="column">
 	<div class="plot" id="graph_ft_real"><!-- graph will be drawn inside this DIV -->
 	  <span class="graph_annotation"><span id="ftRP_values"></span></span>
-	  <span class="graph_label">\(F(u)_{\mathrm{real}} \text{ vs. frequency}\)</span>
+	  <span class="graph_label">\(F(u)_{\mathrm{real}} \)</span>
 	</div>
     
     <div class="plot" id="graph_rp_area"><!-- graph will be drawn inside this DIV -->
       <span class="graph_annotation">Area = <span id="areaRP"></span></span>
-      <span class="graph_label">\(\displaystyle \int f(x)\cdot \cos(2\pi\,ux)\,\mathrm{d}x\)</span>
+      <span class="graph_label">\(\displaystyle \int_{-\infty}^{\infty} f(x)\cdot \cos(2\pi\,ux)\,\mathrm{d}x\)</span>
     </div>
     
     <div class="plot" id="graph_ip_area"><!-- graph will be drawn inside this DIV -->
       <span class="graph_annotation">Area = 0.00</span> 
-      <span class="graph_label">\(\displaystyle \int f(x)\cdot j\sin(2\pi\,ux)\,\mathrm{d}x\)</span>
+      <span class="graph_label">\(\displaystyle \int_{-\infty}^{\infty} f(x)\cdot j\sin(-2\pi\,ux)\,\mathrm{d}x\)</span>
     </div>
   </div>
   </div>
@@ -394,7 +402,7 @@ background-color: #ddd;
 <div id="slider-container">
         <fieldset class="range__field">
         <div class="sliderText">Frequency<br>\(u=\) <span id="freq-value"></span></div>
-        <input class="range" type="range" min="-16" max="16" value="1" step="any" id="frequency-slider" list="snap">
+        <input class="range" type="range" min="-16" max="16" value="1" step="any" id="frequency-slider">
         <svg role="presentation" width="100%" height="10">
             <rect class="range__tick" x="0%" y="3" width="1" height="10"></rect>
             <rect class="range__tick" x="25%" y="3" width="1" height="10"></rect>
@@ -411,9 +419,7 @@ background-color: #ddd;
         </svg>
         </fieldset>
         
-        <datalist id="snap">
-          <option value="0">
-        </datalist>
+        <button id="setSlider" type="button" onclick="setSlider()">\(u=\) 0 Hz</button>
 </div>
 
 <div class="center">
@@ -502,6 +508,11 @@ slider.oninput = function() {
   
   updateGraphs();
   drawFunction();
+}
+
+function setSlider() {
+  slider.value = "0";
+  slider.oninput();
 }
 
 function dynamicSign(sliderValue) {
@@ -646,9 +657,9 @@ function generateData() {
   }
   
   dataSignal = [{x:xValues, y:yValuesSignal, mode:"lines", line: {color: "black"}}];
-  dataRP = [{x:xValues, y:yValuesRP, mode:"lines"}];
+  dataRP = [{x:xValues, y:yValuesRP, mode:"lines", line: {color: "blue"}}];
   dataIP = [{x:xValues, y:yValuesIP, mode:"lines", line: {color: "red"}}];
-  dataRPA = [{x:xValues, y:yValuesRPA, mode:"lines", fill: "tozeroy"}];
+  dataRPA = [{x:xValues, y:yValuesRPA, mode:"lines", fill: "tozeroy", line: {color: "blue"}}];
   dataIPA = [{x:xValues, y:yValuesIPA, mode:"lines", fill: "tozeroy", line: {color: 'red'}}];
   
   // calculate fourier transform
@@ -693,7 +704,7 @@ function updateData() {
 
 // math functions
 function mathfuncRP (x) {
-  return math.cos(-2 * math.PI * u * x) 
+  return math.cos(2 * math.PI * u * x) 
 }
 
 function mathfuncIP (x) {
@@ -731,7 +742,7 @@ this is done by calculating the area under the RP curve over the frequency domai
   step = step || resolution
   
   for (let x = -0.5; x < 0.5; x += step) {
-    total += math.cos(-2 * math.PI * u * (x + step / 2)) * step 
+    total += math.cos(2 * math.PI * u * (x + step / 2)) * step 
   }
   return total
 }

@@ -107,7 +107,7 @@ h2 {
   padding-right: 25vw;
 }
 
-button {
+.funcBTN {
   width: 120px;
   height: 50px;
   margin-left: 10px;
@@ -160,7 +160,6 @@ button {
   z-index: 1;
   background-color: white;
   border: solid 1px;
-  width: 165px;
   text-align: center;
   padding: 2px;
 }
@@ -293,6 +292,11 @@ input.range::-ms-fill-upper {
   border: 0;
 }
 
+#setSlider {
+  display: block;
+  margin: auto;
+}
+
 /*-----pagination-----*/
 .center {
   text-align: center;
@@ -338,7 +342,7 @@ background-color: #ddd;
     </div>
     
     <span class="tooltiptext">
-        This tutorial addresses the differentiation and integration of \(f(x)\). Similar to the shifting and scaling theorems, if the Fourier transform \(F(u)\) of a function \(f(x)\) is known, the Fourier transform of the derivative or the integration of \(f(x)\) can be determined easily:
+        This tutorial addresses the differentiation and integration of \(f(x)\). Similar to the Shifting and Scaling Theorems, if the Fourier transform \(F(u)\) of a function \(f(x)\) is known, the Fourier transform of the derivative or the integration of \(f(x)\) can be determined by using the following properties of the Fourier transform:
         <ul>
         <li>If \(f(x)\) is <b>differentiated</b>, \(F(u)\) has to be <b>multiplied</b> by \(j\omega\).</li> 
         <li>If \(f(x)\) is <b>integrated</b>, \(F(u)\) has to be <b>divided</b> by \(j\omega\).</li>
@@ -363,27 +367,27 @@ background-color: #ddd;
 <div id="content-container">
   <div class="column">
 	<div class="plot" id="graph_signal"><!-- graph will be drawn inside this DIV -->
-	  <span class="graph_label" style="width:70px;">\(f(x)\)</span>
+	  <span class="graph_label">\(f(x)\)</span>
 	</div>
 	
     <div class="plot" id="graph_rp_area"><!-- graph will be drawn inside this DIV -->
-      <span class="graph_label">\(\displaystyle \int f(x)\cdot \cos(2\pi\,ux)\,\mathrm{d}x\)</span>
+      <span class="graph_label">\(\displaystyle \int_{-\infty}^{\infty} f(x)\cdot \cos(2\pi\,ux)\,\mathrm{d}x\)</span>
     </div>
     
     <div class="plot" id="graph_ip_area"><!-- graph will be drawn inside this DIV -->
-      <span class="graph_label">\(\displaystyle \int f(x)\cdot j\sin(2\pi\,ux)\,\mathrm{d}x\)</span>
+      <span class="graph_label">\(\displaystyle \int_{-\infty}^{\infty} f(x)\cdot j\sin(-2\pi\,ux)\,\mathrm{d}x\)</span>
     </div>
   </div>
   
   <div class="column">   
     <div class="plot" id="graph_ft_real"><!-- graph will be drawn inside this DIV -->
       <span class="graph_annotation">\(F\)<span id="areaRP"></span></span>
-      <span class="graph_label">\(F(u)_{real} \text{  vs. frequency}\)</span>
+      <span class="graph_label">\(F(u)_{real} \)</span>
     </div>
     
     <div class="plot" id="graph_ft_imag"><!-- graph will be drawn inside this DIV -->
       <span class="graph_annotation">\(F\)<span id="areaIP"></span></span>
-      <span class="graph_label">\(F(u)_{imag} \text{  vs. frequency}\)</span>
+      <span class="graph_label">\(F(u)_{imag} \)</span>
     </div>
     
   </div>
@@ -392,7 +396,7 @@ background-color: #ddd;
 <div id="slider-container">
         <fieldset class="range__field">
         <div class="sliderText">Frequency<br>\(u=\) <span id="freq-value"></span></div>
-        <input class="range" type="range" min="-16" max="16" value="0" step="any" id="frequency-slider" list="snap-freq">
+        <input class="range" type="range" min="-16" max="16" value="0" step="any" id="frequency-slider">
         <svg role="presentation" width="100%" height="10">
             <rect class="range__tick" x="0%" y="3" width="1" height="10"></rect>
             <rect class="range__tick" x="25%" y="3" width="1" height="10"></rect>
@@ -409,9 +413,7 @@ background-color: #ddd;
         </svg>
         </fieldset>
         
-        <datalist id="snap-freq">
-          <option value="0">
-        </datalist>
+        <button id="setSlider" type="button" onclick="setSlider()">\(u=\) 0 Hz</button>
 </div>
 
 <div class="center">
@@ -493,6 +495,11 @@ slider.oninput = function() {
 }
 
 // functions --------------------------------------------------
+function setSlider() {
+  slider.value = "0";
+  slider.oninput();
+}
+
 function drawGraphs() {
   Plotly.newPlot("graph_signal", dataSignal, layout, config);
   Plotly.newPlot("graph_rp_area", dataRPA, layout, config);

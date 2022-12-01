@@ -106,6 +106,17 @@ h2 {
   margin-left: 12.5%;
 }
 
+#CenterScaleSliderBTN {
+  text-align: center;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+.setScaleSliderBTN {
+  display: inline-block;
+  margin: auto;
+}
+
 .sliderText {
   width: 100%;
   text-align: center;
@@ -157,7 +168,6 @@ g.tip {
   z-index: 1;
   background-color: white;
   border: solid 1px;
-  width: 160px;
   text-align: center;
   padding: 2px;
 }
@@ -371,11 +381,11 @@ background-color: #ddd;
     </div>
     
     <span class="tooltiptext">
-    Similar to the shifting theorem, if the Fourier transform \(F(u)\) of a function \(f(x)\) is known, the Fourier transform of the scaled function \(f(ax)\) can be determined by using the scaling theorem. 
+    Similar to the Shifting Theorem, if the Fourier transform \(F(u)\) of a function \(f(x)\) is known, the Fourier transform of the scaled function \(f(ax)\) can be determined by using the Scaling Theorem. 
     <br>
-    By moving the scale slider, we may observe that by stretching \(f(x)\), we squeeze \(F(u)\) and vice versa. Therefore, to obtain the Fourier transform of a function which is scaled by the factor \(a\), the values and the frequency of \(F(u)\) have to be rescaled by the inverse of that factor.
+    By moving the scale slider, it may be observed that by stretching \(f(x)\), we squeeze \(F(u)\) and vice versa. Therefore, to obtain the Fourier transform of a function which is scaled by the factor \(a\), the values and the frequency of \(F(u)\) are rescaled by the inverse of that factor.
     <br><br>
-    One interesting aspect which can be seen here is that the width of the rectangular function is directly coupled with the peak value of the sinc. To investigate this, some interesting scaling values can be \(a=\frac{1}{2}\) and \(a=\frac{1}{3}\). 
+    One interesting aspect that can be seen here is that the width of the rectangular function is directly coupled with the peak value of its Fourier Transform, the sinc function. To investigate this, some interesting scaling values can be \(a=\frac{1}{2}\) and \(a=\frac{1}{3}\). 
     </span>
 </div>
 
@@ -384,7 +394,7 @@ background-color: #ddd;
 <div id=scale-container>
         <fieldset class="range__field">
         <div class="sliderText">Scaling<br>\(a=\) <span id="scale-value"></span></div>
-        <input class="range" type="range" min="0.01" max="2" value="1" step="any" id="scale-slider" list="snap">
+        <input class="range" type="range" min="0.01" max="2" value="1" step="any" id="scale-slider">
         <svg role="presentation" width="100%" height="10">
             <rect class="range__tick" x="0%" y="3" width="1" height="10"></rect>
             <rect class="range__tick" x="25%" y="3" width="1" height="10"></rect>
@@ -401,24 +411,23 @@ background-color: #ddd;
         </svg>
         </fieldset>
         
-        <datalist id="snap">
-          <option value="0.33">
-          <option value="0.5">
-          <option value="1">
-          <option value="1.5">
-        </datalist>
+        <div id="CenterScaleSliderBTN">
+            <button class="setScaleSliderBTN" type="button" onclick="setScaleSlider('0.33')">\(a=\) 0.33</button>
+            <button class="setScaleSliderBTN" type="button" onclick="setScaleSlider('0.5')">\(a=\) 0.5</button>
+            <button class="setScaleSliderBTN" type="button" onclick="setScaleSlider('1')">\(a=\) 1</button>
+        </div>
 </div>
   
 <div id="content-container">
   <div class="column">
 	<div class="plot" id="graph_signal"><!-- graph will be drawn inside this DIV -->
-	  <span class="graph_label" style="width:70px;">\(f(a\,x)\)</span>
+	  <span class="graph_label">\(f(a\,x)\)</span>
 	</div>
   </div>
   
   <div class="column">   
     <div class="plot" id="graph_ft_real"><!-- graph will be drawn inside this DIV -->
-      <span class="graph_label">\(F(u) \text{  vs. frequency}\)</span>
+      <span class="graph_label">\( F(u) \)</span>
     </div>
   </div>
 </div>
@@ -490,6 +499,11 @@ scaleSlider.oninput = function() {
 }
 
 // functions --------------------------------------------------
+function setScaleSlider(val) {
+  scaleSlider.value = val;
+  scaleSlider.oninput();
+}
+
 function updateHTML() {  
   scaleValue.innerHTML = a.toFixed(2);
   rectArghtml.innerHTML = a.toFixed(2);

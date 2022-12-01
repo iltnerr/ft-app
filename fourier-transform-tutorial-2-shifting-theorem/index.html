@@ -106,6 +106,17 @@ h2 {
   margin-left: 12.5%;
 }
 
+#CenterShiftSliderBTN {
+  text-align: center;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+.setShiftSliderBTN {
+  display: inline-block;
+  margin: auto;
+}
+
 .sliderText {
   width: 100%;
   text-align: center;
@@ -166,7 +177,6 @@ g.tip {
   z-index: 1;
   background-color: white;
   border: solid 1px;
-  width: 195px;
   text-align: center;
   padding: 2px;
 }
@@ -288,6 +298,11 @@ input.range::-ms-fill-upper {
   border: 0;
 }
 
+.setFreqSliderBTN {
+  display: block;
+  margin: auto;
+}
+
 /*-----pagination-----*/
 .center {
   text-align: center;
@@ -333,20 +348,20 @@ background-color: #ddd;
     </div>
     
     <span class="tooltiptext">
-    This tutorial deals with the shifting theorem of the Fourier transform. The left side shows a rectangular function \(f(x)\) which can now be shifted by \(x_0\) with the corresponding slider. Additionally, the result of \(f(x-x_0)\cdot e^{-j\,2\pi ux}\) is depicted on the left. For any given frequency the areas under the red and blue curve correspond to the imaginary and the real component of the Fourier transform \(F(u)\).   
+    The focus of this tutorial is the Shifting Theorem of the Fourier transform. The left side shows a rectangular function \(f(x)\) which can now be shifted by \(x_0\) with the corresponding slider. Additionally, the result of \(f(x-x_0)\cdot e^{-j\,2\pi ux}\) is depicted on the left. For any given frequency the areas under the red and blue curve correspond to the real and the imaginary component of the Fourier transform \(F(u)\).   
     <br><br>
     The right side shows the real and the imaginary components, \(F(u)_{\mathrm{real}}\) and \(F(u)_{\mathrm{imag}}\), as well as the magnitude of the Fourier transform, \(\lvert F(u) \rvert = \sqrt{F(u)_{\mathrm{real}}^2 + F(u)_{\mathrm{imag}}^2}\).
     <br><br>
-    First shift the signal \(f(x)\) and then compute \(F(u)\) by moving the frequency slider. After shifting \(f(x)\), it is no longer an even function and therefore we may observe an imaginary part. Notice how the components of the Fourier transform change while the magnitude stays the same, regardless of the shift \(x_0\).
+    Play around with the two sliders in order to shift the signal \(f(x)\) and to compute its Fourier transform \(F(u)\). After shifting \(f(x)\), it is no longer an even function and therefore an imaginary component may be observed. Notice how the components of the Fourier transform change as a consequence of shifting \(f(x)\). However, the magnitude does not change, regardless of the shift \(x_0\).
     </span>
 </div>
 
-<img id="header" src="../img/tut2-header.svg" alt="Fourier Transform & Translation">
+<img id="header" src="../img/tut2-header.svg" alt="Fourier Transform & Shifting Theorem">
 
 <div id="shift-container">
         <fieldset class="range__field">
         <div class="sliderText">Spatial Shift<br>\(x_0=\) <span id="shift-value"></span></div>
-        <input class="range" type="range" min="-2" max="2" value="0" step="any" id="shift-slider" list="snap">
+        <input class="range" type="range" min="-2" max="2" value="0" step="any" id="shift-slider">
         <svg role="presentation" width="100%" height="10">
             <rect class="range__tick" x="0%" y="3" width="1" height="10"></rect>
             <rect class="range__tick" x="25%" y="3" width="1" height="10"></rect>
@@ -362,41 +377,41 @@ background-color: #ddd;
             <text class="range__point" x="100%" y="14" text-anchor="end">2</text>
         </svg>
         </fieldset>
-
-        <datalist id="snap">
-          <option value="-1.5">
-          <option value="-1">
-          <option value="-0.5">
-          <option value="0">
-          <option value="0.5">
-          <option value="1">
-          <option value="1.5">
-        </datalist>
+        
+        <div id="CenterShiftSliderBTN">
+            <button class="setShiftSliderBTN" type="button" onclick="setShiftSlider('-1')">\(x_0=\) -1</button>
+            <button class="setShiftSliderBTN" type="button" onclick="setShiftSlider('0')">\(x_0=\) 0</button>
+            <button class="setShiftSliderBTN" type="button" onclick="setShiftSlider('1')">\(x_0=\) 1</button>
+        </div>
 </div>
 
 <div id="content-container">
   <div class="column">
 	<div class="plot" id="graph_signal"><!-- graph will be drawn inside this DIV -->
-	  <span class="graph_label" style="width:70px;">\(f(x-x_0)\)</span>
+	  <span class="graph_label">\(f(x-x_0)\)</span>
 	</div>
-    <div class="plot" id="graph_rp_area"><!-- graph will be drawn inside this DIV --></div>
-    <div class="plot" id="graph_ip_area"><!-- graph will be drawn inside this DIV --></div>
+    <div class="plot" id="graph_rp_area"><!-- graph will be drawn inside this DIV -->
+      <span class="graph_label">\(\displaystyle \int_{-\infty}^{\infty} f(x-x_0)\cdot \cos(2\pi\,ux)\,\mathrm{d}x\)</span>
+    </div>
+    <div class="plot" id="graph_ip_area"><!-- graph will be drawn inside this DIV -->
+      <span class="graph_label">\(\displaystyle \int_{-\infty}^{\infty} f(x-x_0)\cdot j\sin(-2\pi\,ux)\,\mathrm{d}x\)</span>
+    </div>
   </div>
   
   <div class="column">
 	<div class="plot" id="graph_ft_magn"><!-- graph will be drawn inside this DIV -->
 	  <span class="graph_annotation">\(F\)<span id="ftmagn_values"></span></span>
-	  <span class="graph_label">\(\lvert F(u) \rvert \text{ vs. frequency}\)</span>
+	  <span class="graph_label">\(\lvert F(u) \rvert\)</span>
 	</div>
     
     <div class="plot" id="graph_ft_real"><!-- graph will be drawn inside this DIV -->
       <span class="graph_annotation">Area = <span id="areaRP"></span></span>
-      <span class="graph_label">\(F(u)_{\mathrm{real}} = \)<br>\(\int f(x-x_0)\cdot \cos(2\pi\,ux)\,\mathrm{d}x\)</span>
+      <span class="graph_label">\(F(u)_{\mathrm{real}}\)</span>
     </div>
     
     <div class="plot" id="graph_ft_imag"><!-- graph will be drawn inside this DIV -->
       <span class="graph_annotation">Area = <span id="areaIP"></span></span> 
-      <span class="graph_label">\(F(u)_{\mathrm{imag}} = \)<br>\(\int f(x-x_0)\cdot j\sin(2\pi\,ux)\,\mathrm{d}x\)</span>
+      <span class="graph_label">\(F(u)_{\mathrm{imag}}\)</span>
     </div>
   </div>
 </div>
@@ -404,7 +419,7 @@ background-color: #ddd;
 <div id="slider-container">
         <fieldset class="range__field">
         <div class="sliderText">Frequency<br>\(u=\) <span id="freq-value"></span></div>
-        <input class="range" type="range" min="-16" max="16" value="1" step="any" id="frequency-slider" list="snap-freq">
+        <input class="range" type="range" min="-16" max="16" value="1" step="any" id="frequency-slider">
         <svg role="presentation" width="100%" height="10">
             <rect class="range__tick" x="0%" y="3" width="1" height="10"></rect>
             <rect class="range__tick" x="25%" y="3" width="1" height="10"></rect>
@@ -421,9 +436,7 @@ background-color: #ddd;
         </svg>
         </fieldset>
         
-        <datalist id="snap-freq">
-          <option value="0">
-        </datalist>
+        <button class="setFreqSliderBTN" type="button" onclick="setFreqSlider()">\(u=\) 0 Hz</button>
 </div>
 
 <div class="center">
@@ -524,6 +537,16 @@ shiftSlider.oninput = function() {
 }
 
 // functions --------------------------------------------------
+function setFreqSlider() {
+  slider.value = "0";
+  slider.oninput();
+}
+
+function setShiftSlider(val) {
+  shiftSlider.value = val;
+  shiftSlider.oninput();
+}
+
 function drawGraphs() {
   Plotly.newPlot("graph_signal", dataSignal, layout, config);
   Plotly.newPlot("graph_rp_area", dataRPA, layout, config);
@@ -702,7 +725,7 @@ function generateData() {
   }
   
   dataSignal = [{x:xValues, y:yValuesSignal, mode:"lines", line: {color: "black"}}];
-  dataRPA = [{x:xValues, y:yValuesRPA, mode:"lines", fill: "tozeroy"}];
+  dataRPA = [{x:xValues, y:yValuesRPA, mode:"lines", fill: "tozeroy", line: {color: "blue"}}];
   dataIPA = [{x:xValues, y:yValuesIPA, mode:"lines", fill: "tozeroy", line: {color: 'red'}}];
     
   // calculate fourier transform

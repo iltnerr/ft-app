@@ -102,7 +102,7 @@ h2 {
   align-items: center;
 }
 
-button {
+.funcBTN {
   width: 90px;
   height: 45px;
   margin: 10px;
@@ -110,6 +110,12 @@ button {
 
 .funcBTN.active {
   border: 3px solid #1c33c7ff;
+}
+
+.freqBTN {
+  width: 90px;
+  height: 45px;
+  margin: 10px;
 }
 
 .freqBTN.active {
@@ -158,7 +164,6 @@ button {
   z-index: 1;
   background-color: white;
   border: solid 1px;
-  width: 165px;
   text-align: center;
   padding: 2px;
 }
@@ -291,6 +296,17 @@ input.range::-ms-fill-upper {
   border: 0;
 }
 
+#CenterFreqSliderBTN {
+  text-align: center;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+.setFreqSliderBTN {
+  display: inline-block;
+  margin: auto;
+}
+
 /*-----pagination-----*/
 .center {
   text-align: center;
@@ -328,7 +344,7 @@ background-color: #ddd;
 <div id="chapter-container">
     <div id="chapter">
         <h1>Tutorial 4: Sinusoidal Wave and the Dirac Delta</h1>
-        <h2>Six Sinusoidal Waves and Their Fourier Transforms.</h2>
+        <h2>Different Sinusoidal Waves and Their Fourier Transforms.</h2>
     </div>
 
     <div id="cont">
@@ -336,17 +352,17 @@ background-color: #ddd;
     </div>
     
     <span class="tooltiptext">
-        Here we extend the ideas of the second page by considering \(f(x)\) to either be a <i>pure</i> sine wave, a <i>pure</i> cosine wave or a cosine wave with a shift of 45°. Here, "pure" means that the functions are not shifted. Shifting the cosine by 45° produces a sinusoidal wave function which may be decomposed into equivalent cosine and sine components. Additionally, we consider two settings for the signal frequency: \(\beta=\) 0.75 Hz and \(\beta=\) 1.25 Hz. Choose between the six signals and try to reason about the differences of their Fourier transforms. 
+        Here the ideas of the previous page will be extended by considering \(f(x)\) to either be a <i>pure</i> sine wave, a <i>pure</i> cosine wave or a cosine wave with a shift of 45°. Here, <i>pure</i> means that the functions are not shifted. Shifting the cosine function by 45° results in a sinusoidal wave function which may be decomposed into equivalent cosine and sine components. Additionally, two settings for the signal frequency are considered: \(\beta=\) 0.75 Hz and \(\beta=\) 1.25 Hz. Choose between the different signal settings and try to reason about the differences of their Fourier transforms. 
         <br><br>
-        As we saw on the second page, the Fourier transform of a pure cosine wave only has a real component because the cosine is an even function. 
+        As we saw on the previous page, the Fourier transform of a pure cosine wave only has a real component because the cosine is an even function. 
         <br>
         Conversely, the Fourier transform of a pure sine wave only has an imaginary component because the sine is an odd function. The Fourier transform of a sine wave has one positive and one negative peak which may also be explained by the fact that the sine function is odd. This can be seen by comparing the area under the red curve for \(u=-\beta\) and \(u=+\beta\). 
         <br>
-        The shifted cosine function is the most interesting part of this page. As explained above, this sinusoidal wave consists of equivalent cosine and sine components. Hence, its Fourier transform is composed of a real and an imaginary component.
+        The shifted cosine function is the most interesting part of this page. As explained above, this sinusoidal wave consists of equivalent cosine and sine components. Hence, its Fourier transform consists of a composition of their corresponding Fourier transforms.
         <br><br>
-        Regardless of the chosen sinusoidal wave function, the peaks of the Fourier transform always lie at the signal's frequency \(\pm\beta\). The alignment of the frequencies may be observed here as well. To see this, move the frequency slider and let \(u\) slowly approach \(\pm\beta\). While you do this, focus on the blue and red curve on the left.
+        Regardless of the chosen sinusoidal wave function, the peaks of the Fourier transform always lie at the signal's frequency \(\pm\beta\). The alignment of the frequencies may be observed here as well. To visualize this, move the frequency slider and let \(u\) slowly approach \(\pm\beta\).
         <br><br>
-        <u>Note:</u> The examples on this page do not show true Dirac delta functions, because here we only integrate from -5 to 5 for visualization purposes. If we integrated over infinity, the Fourier transforms would be zero for every frequency except for \(u=\pm\beta\) (where the Dirac delta impulses would lie).
+        <u>Note:</u> The examples on this page do not show true Dirac delta functions, because here the integration limits only range from -5 to 5 for illustration purposes. If we integrated from \(-\infty\) to \(\infty\), the Fourier transforms would be zero for every frequency except for \(u=\pm\beta\) (where the Dirac delta impulses would lie).
     </span>
 </div>
 
@@ -361,16 +377,16 @@ background-color: #ddd;
   </div>
   
   <div class="column">
-  <p> Frequency \(\beta\) of \(f(x)\)</p>
-  <button class="active freqBTN" id="f2" type="button" onclick="selectFrequency(1.25)">1.25 Hz</button>
-  <button class="freqBTN" type="button" id="f1" onclick="selectFrequency(0.75)">0.75 Hz</button>
+  <p> Frequency of \(f(x)\)</p>
+  <button class="active freqBTN" type="button" id="f1" onclick="selectFrequency(0.75)">\(\beta\) = 0.75 Hz</button>
+  <button class="freqBTN" id="f2" type="button" onclick="selectFrequency(1.25)">\(\beta\) = 1.25 Hz</button>
   </div>
 </div>
 
 
   <div class="column">
   <h2>Fourier Transforms of Different Sinusoidal Wave Functions</h2>
-  <p>Note that the examples below do not show true Dirac delta functions, because here we only integrate from -5 to 5 for visualization purposes.</p>
+  <p>Note that the examples below do not show true Dirac delta functions, because here the integration limits only range from -5 to 5 for illustration purposes.</p>
   </div>
 
 </div>
@@ -379,27 +395,27 @@ background-color: #ddd;
 <div id="content-container">
   <div class="column">
 	<div class="plot" id="graph_signal"><!-- graph will be drawn inside this DIV -->
-	  <span class="graph_label" style="width:70px;">\(f(x)\)</span>
+	  <span class="graph_label">\(f(x)\)</span>
 	</div>
 	
     <div class="plot" id="graph_rp_area"><!-- graph will be drawn inside this DIV -->
       <!--<span class="graph_annotation">Area = <span id="areaRP"></span></span> -->
-      <span class="graph_label">\(\displaystyle \int f(x)\cdot \cos(2\pi\,ux)\,\mathrm{d}x\)</span>
+      <span class="graph_label">\(\displaystyle \int_{-5}^{5} f(x)\cdot \cos(2\pi\,ux)\,\mathrm{d}x\)</span>
     </div>
     
     <div class="plot" id="graph_ip_area"><!-- graph will be drawn inside this DIV -->
       <!--<span class="graph_annotation">Area = <span id="areaIP"></span></span> -->
-      <span class="graph_label">\(\displaystyle \int f(x)\cdot j\sin(2\pi\,ux)\,\mathrm{d}x\)</span>
+      <span class="graph_label">\(\displaystyle \int_{-5}^{5} f(x)\cdot j\sin(-2\pi\,ux)\,\mathrm{d}x\)</span>
     </div>
   </div>
   
   <div class="column">   
     <div class="plot" id="graph_ft_real"><!-- graph will be drawn inside this DIV -->
-      <span class="graph_label">\(F(u)_{real} \text{  vs. frequency}\)</span>
+      <span class="graph_label">\(F(u)_{real} \)</span>
     </div>
     
     <div class="plot" id="graph_ft_imag"><!-- graph will be drawn inside this DIV -->
-      <span class="graph_label">\(F(u)_{imag} \text{  vs. frequency}\)</span>
+      <span class="graph_label">\(F(u)_{imag} \)</span>
     </div>
     
   </div>
@@ -424,6 +440,12 @@ background-color: #ddd;
             <text class="range__point" x="100%" y="14" text-anchor="end">2 Hz</text>
         </svg>
         </fieldset>
+        
+        <div id="CenterFreqSliderBTN">
+            <button class="setFreqSliderBTN" type="button" onclick="setSlider(-42)">\(u= -\beta\)</button>
+            <button class="setFreqSliderBTN" type="button" onclick="setSlider(0)">\(u=\) 0 Hz</button>
+            <button class="setFreqSliderBTN" type="button" onclick="setSlider(42)">\(u= +\beta\)</button>
+        </div>
     </div>
 
 <div class="center">
@@ -458,7 +480,7 @@ var freqValuehtml = document.getElementById("freq-value");
 // variables
 var lowerLimit = -5;
 var higherLimit = 5;
-var fSig = 1.25;
+var fSig = 0.75;
 var inputFuncString = "cos";
 var resolution = 0.01;
 var u = slider.value // initial value for u (frequency)
@@ -507,6 +529,18 @@ slider.oninput = function() {
 }
 
 // functions --------------------------------------------------
+function setSlider(val) {
+  if (val < 0) {
+  slider.value = -fSig;
+  } else if (val > 0) {
+  slider.value = fSig;
+  } else {
+  slider.value = 0;
+  }
+  
+  slider.oninput();
+}
+
 function drawGraphs() {
   Plotly.newPlot("graph_signal", dataSignal, layout, config);
   Plotly.newPlot("graph_rp_area", dataRPA, layout, config);

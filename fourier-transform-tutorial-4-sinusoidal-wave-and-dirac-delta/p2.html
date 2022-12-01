@@ -106,7 +106,7 @@ h4 {
   align-items: center;
 }
 
-button {
+.intLimitsBTN {
   width: 40px;
   height: 80px;
   margin-left: 10px;
@@ -158,7 +158,6 @@ button.active {
   z-index: 1;
   background-color: white;
   border: solid 1px;
-  width: 165px;
   text-align: center;
   padding: 2px;
 }
@@ -291,6 +290,17 @@ input.range::-ms-fill-upper {
   border: 0;
 }
 
+#CenterFreqSliderBTN {
+  text-align: center;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+.setFreqSliderBTN {
+  display: inline-block;
+  margin: auto;
+}
+
 /*-----pagination-----*/
 .center {
   text-align: center;
@@ -336,9 +346,9 @@ background-color: #ddd;
     </div>
     
     <span class="tooltiptext">
-        We start with a 1 Hz cosine signal: \(f(x)=\cos(2\pi\beta x)\) where \(\beta = 1\,\mathrm{Hz}\). 
+        We start with a 1 Hz cosine signal: \(f(x)=\cos(2\pi\beta x)\), where \(\beta = 1\,\mathrm{Hz}\). 
         <br>
-        In order to obtain the Fourier transform for this signal, the product \(\cos(2\pi x)\cdot e^{-j\,2\pi ux}\) has to be integrated from \(-\infty\) to \(+\infty\). To visualize this, the left side shows \(f(x)\) and the corresponding cosine and sine function regarding \(e^{-j\,2\pi ux}\). The right side depicts the result of multiplying \(f(x)\) by \(e^{-j\,2\pi ux}\) as well as the real part of the Fourier transform \(F(u)_{\mathrm{real}}\). Since the cosine function is even, the area under the red curve is always zero and the Fourier transform has no imaginary part.
+        In order to obtain the Fourier transform for this signal, the product \(\cos(2\pi\beta x)\cdot e^{-j\,2\pi ux}\) has to be integrated from \(-\infty\) to \(\infty\). To visualize this, the left side shows \(f(x)\) and the corresponding cosine and sine function regarding \(e^{-j\,2\pi ux}\). The right side depicts the result of multiplying \(f(x)\) by \(e^{-j\,2\pi ux}\) as well as the real part of the Fourier transform \(F(u)_{\mathrm{real}}\). Since the cosine function is even, the area under the red curve is always zero. Hence, the Fourier transform has no imaginary part.
         <br><br>
         In the following we will focus on the integration which corresponds to determining the area under the curves on the right side. For now, we start by integrating from -1 to +1 (make sure that the correct button is selected). As you move the frequency slider, you may notice that the area under the blue curve is mostly close to zero, except for the case when the frequency \(u\) approaches the signal frequency \(\beta\) of 1 Hz (and -1 Hz!).
         <br>
@@ -351,34 +361,36 @@ background-color: #ddd;
         </ol>
         To study the integration, you may increase the integration limits successively with the provided buttons. As you change the limits, focus on the Fourier transform and the area under the blue curve. 
         <br>
-        As the integration limits approach infinity (-50 and +50 is sufficient for viewing purposes), it becomes clear that the area must <b>always</b> be zero (the areas on the positive and negative side cancel each other for infinite signals), except for the case when the frequencies match <b>exactly</b>. Then, the area approaches infinity.
+        As the integration limits approach infinity (-50 and +50 is sufficient here), it becomes clear that the area must <b>always</b> be zero (the areas on the positive and negative side cancel each other for infinite signals), except for the case when the frequencies \(u\) and \(\beta\) match <b>exactly</b>. Only in this case the area is non-zero and interestingly, then it approaches infinity.
         <br><br>
-        To summarize, only for \(u=\pm\beta\) the Fourier transform is non-zero. In fact, it is an infinitely thin spike with infinite height. This is also known as the Dirac delta function or the <i>unit impulse</i>.
+        To summarize, only for \(u=\pm\beta\) the Fourier transform is non-zero. In fact, it is an infinitely thin spike with infinite height. This is also known as the Dirac delta function or the <i>Unit Impulse</i> function.
     </span>
 </div>
 
 <div id="header-container">
   
   <div class="header">
-    \(F(u)=\displaystyle\int\limits_{-\infty}^{\infty} \cos(2\pi x)\,e^{-j\,2\pi ux}\,\mathrm{d}x\)
+    \(F(u)=\displaystyle\int\limits_{-\infty}^{\infty} \cos(2\pi\beta x)\,e^{-j\,2\pi ux}\,\mathrm{d}x\)
   </div>
   
-  <button class="active" id="b1" type="button" onclick="selectFunction('1')">\(\displaystyle\int\limits_{-1}^{1}\)</button>
-  <button type="button" id="b2" onclick="selectFunction('2')">\(\displaystyle\int\limits_{-2}^{2}\)</button>
-  <button type="button" id="b5" onclick="selectFunction('5')">\(\displaystyle\int\limits_{-5}^{5}\)</button>
-  <button type="button" id="b50" onclick="selectFunction('50')">\(\displaystyle\int\limits_{-50}^{50}\)</button>
+  <button class="intLimitsBTN active" id="b1" type="button" onclick="selectFunction('1')">\(\displaystyle\int\limits_{-1}^{1}\)</button>
+  <button class="intLimitsBTN" type="button" id="b2" onclick="selectFunction('2')">\(\displaystyle\int\limits_{-2}^{2}\)</button>
+  <button class="intLimitsBTN" type="button" id="b5" onclick="selectFunction('5')">\(\displaystyle\int\limits_{-5}^{5}\)</button>
+  <button class="intLimitsBTN" type="button" id="b50" onclick="selectFunction('50')">\(\displaystyle\int\limits_{-50}^{50}\)</button>
 </div>
 
 <div id="content-container">
   <div class="column">
 	<div class="plot" id="graph_signal"><!-- graph will be drawn inside this DIV -->
-	  <span class="graph_label" style="width:70px;">\(f(x)\)</span>
+	  <span class="graph_label">\(f(x)\)</span>
 	</div>
 	
 	<div class="plot" id="graph_rp"><!-- graph will be drawn inside this DIV -->
+	  <span class="graph_label">\( \cos(2\pi\,ux) \)</span>
 	</div>
 	
 	<div class="plot" id="graph_ip"><!-- graph will be drawn inside this DIV -->
+	  <span class="graph_label">\( j\sin(-2\pi\,ux) \)</span>
 	</div>
 
   </div>
@@ -386,7 +398,7 @@ background-color: #ddd;
   <div class="column">   
     <div class="plot" id="graph_ft_real"><!-- graph will be drawn inside this DIV -->
       <span class="graph_annotation">\(F\)<span id="ftValues"></span></span>
-      <span class="graph_label">\(F(u)_{real} \text{  vs. frequency}\)</span>
+      <span class="graph_label">\(F(u)_{real}\)</span>
     </div>
     
     <div class="plot" id="graph_rp_area"><!-- graph will be drawn inside this DIV -->
@@ -396,7 +408,7 @@ background-color: #ddd;
     
     <div class="plot" id="graph_ip_area"><!-- graph will be drawn inside this DIV -->
       <span class="graph_annotation">Area = 0.00<span id="areaIP"></span></span>
-      <span class="graph_label">\(\displaystyle \int f(x)\cdot j\sin(2\pi\,ux)\,\mathrm{d}x\)</span>
+      <span class="graph_label">\(\displaystyle \int f(x)\cdot j\sin(-2\pi\,ux)\,\mathrm{d}x\)</span>
     </div>
   </div>
 </div>
@@ -404,7 +416,7 @@ background-color: #ddd;
     <div id="slider-container">
         <fieldset class="range__field">
         <div class="sliderText">Frequency<br>\(u=\) <span id="freq-value"></span></div>
-        <input class="range" type="range" min="-16" max="16" value="3" step="any" id="frequency-slider" list="snap">
+        <input class="range" type="range" min="-16" max="16" value="3" step="any" id="frequency-slider">
         <svg role="presentation" width="100%" height="10">
             <rect class="range__tick" x="0%" y="3" width="1" height="10"></rect>
             <rect class="range__tick" x="25%" y="3" width="1" height="10"></rect>
@@ -421,11 +433,11 @@ background-color: #ddd;
         </svg>
         </fieldset>
         
-        <datalist id="snap">
-          <option value="-1">
-          <option value="0">
-          <option value="1">
-        </datalist>
+        <div id="CenterFreqSliderBTN">
+            <button class="setFreqSliderBTN" type="button" onclick="setSlider('-1')">\(u=\) -1 Hz</button>
+            <button class="setFreqSliderBTN" type="button" onclick="setSlider('0')">\(u=\) 0 Hz</button>
+            <button class="setFreqSliderBTN" type="button" onclick="setSlider('1')">\(u=\) 1 Hz</button>
+        </div>
     </div>
 
 <div class="center">
@@ -502,6 +514,11 @@ slider.oninput = function() {
 }
 
 // functions --------------------------------------------------
+function setSlider(val) {
+  slider.value = val;
+  slider.oninput();
+}
+
 function ToggleDescription() {
   if (tooltiptext.style.opacity == 1)
     {

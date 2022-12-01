@@ -260,6 +260,11 @@ input.range::-ms-fill-upper {
   border: 0;
 }
 
+#setSlider {
+  display: block;
+  margin: auto;
+}
+
 /*-----pagination-----*/
 .center {
   text-align: center;
@@ -309,9 +314,9 @@ background-color: #ddd;
     <br><br>
     To compute the Fourier transform of a function \(f(x)\), at first we have to multiply \(f(x)\) by \(e^{-j\,2\pi ux}\) and then integrate the result from \(-\infty\) to \(+\infty\). At the moment we will focus only on the <b>complex exponential function</b>. According to <i>Euler's formula</i>, \(e^{-j\,2\pi ux}\) is associated with a real (cosine) and an imaginary (sine) component. In other words, the multiplication by \(e^{-j\,2\pi ux}\) means multiplication of \(f(x)\) with a real cosine function and an imaginary sine function which are shown below. 
     <br><br>
-    Move the slider to vary the frequency \(u\) of the complex exponential function. As you go from negative to positive frequencies, the behaviour of the cosine function does not change because it is an <b>even</b> function. However, the sine function flips because it is an <b>odd</b> function. These properties are important to consider when dealing with the Fourier transform. Furthermore, in digital image processing we usually work with color values of pixels. For this reason a color coded visualization of the cosine and sine wave is depicted as well. 
+    Move the slider to vary the frequency \(u\) of the complex exponential function. As you go from negative to positive frequencies, the behaviour of the cosine function does not change because it is an <b>even</b> function. However, the sine function flips because it is an <b>odd</b> function. These properties are important to consider when dealing with the Fourier transform and will become more clear during the following tutorial pages.
     <br><br>
-    <u>Note</u>: Usually pixel values are integers that range from 0 (black) to 255 (white). Here, black is represented as -1 or -j and white as +1 or +j.
+    Furthermore, in digital image processing we usually work with color values of pixels. For this reason color coded visualizations of the cosine and sine waves are depicted as well. Usually pixel values are integers ranging from 0 (black) to 255 (white). Here, black represents the values -1 or -j and white the values +1 or +j.
     </span>
 </div>
 
@@ -336,7 +341,7 @@ background-color: #ddd;
     <div id="slider-container">
         <fieldset class="range__field">
         <div class="sliderText">Frequency<br>\(u=\) <span id="freq-value"></span></div>
-        <input class="range" type="range" min="-16" max="16" value="1" step="any" id="frequency-slider" list="snap">
+        <input class="range" type="range" min="-16" max="16" value="1" step="any" id="frequency-slider">
         <svg role="presentation" width="100%" height="10">
             <rect class="range__tick" x="0%" y="3" width="1" height="10"></rect>
             <rect class="range__tick" x="25%" y="3" width="1" height="10"></rect>
@@ -353,9 +358,7 @@ background-color: #ddd;
         </svg>
         </fieldset>
         
-        <datalist id="snap">
-          <option value="0">
-        </datalist>
+        <button id="setSlider" type="button" onclick="setSlider()">\(u=\) 0 Hz</button>
     </div>
 
 <div class="center">
@@ -394,6 +397,7 @@ var slider = document.getElementById("frequency-slider");
 var u = slider.value; // initial value for u (frequency)
 var freqValuehtml = document.getElementById("freq-value");
 var sign = "-";
+var signcos = "";
 var esup = document.getElementById("e-superscript");
 var resolution = 0.01;
 
@@ -401,7 +405,7 @@ var resolution = 0.01;
 const [layout, config] = plotlyOptions();
 const layoutIM = JSON.parse(JSON.stringify(layout));
 
-layout.title = {text: `cos(${sign}2\u03C0\u00B7${parseFloat(u).toFixed(2)}x)`,
+layout.title = {text: `cos(${signcos}2\u03C0\u00B7${parseFloat(u).toFixed(2)}x)`,
                 font: {size: 24}
                 };
 
@@ -441,6 +445,11 @@ slider.oninput = function() {
 }
 
 // functions --------------------------------------------------
+function setSlider() {
+  slider.value = "0";
+  slider.oninput();
+}
+
 function ToggleDescription() {
   if (tooltiptext.style.opacity == 1)
     {
@@ -493,15 +502,17 @@ function updateHTML(arg) {
   // check sign of u to display title of graphs correctly
   if (arg > 0) {
     sign = "-";
+    signcos = "";
   } else {
     sign = "";
+    signcos = "-";
   }
   
   esup.innerHTML = `${sign}j\u20092\u03C0\u2009${Math.abs(parseFloat(u).toFixed(2))}x`;
   freqValuehtml.innerHTML = parseFloat(u).toFixed(2) + ' Hz';
   
   layoutIM.title.text = `j\u2009sin(${sign}2\u03C0\u00B7${Math.abs(parseFloat(u).toFixed(2))}x)`;
-  layout.title.text = `cos(${sign}2\u03C0\u00B7${Math.abs(parseFloat(u).toFixed(2))}x)`;
+  layout.title.text = `cos(${signcos}2\u03C0\u00B7${Math.abs(parseFloat(u).toFixed(2))}x)`;
 }
 
 function plotlyOptions() {
@@ -585,7 +596,7 @@ function generateData() {
   let traceRP, dataRP, traceIP, dataIP;
   
   // lines
-  traceRP = {x:xValues, y:yValuesRP, mode:"lines"};
+  traceRP = {x:xValues, y:yValuesRP, mode:"lines", line: {color: "blue"}};
   traceIP = {x:xValues, y:yValuesIP, mode:"lines", line: {color: "red"}};
   
   dataRP = [traceRP];

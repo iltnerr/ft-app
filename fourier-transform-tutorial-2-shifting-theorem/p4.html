@@ -107,6 +107,17 @@ h2 {
   margin-left: 12.5%;
 }
 
+#CenterShiftSliderBTN {
+  text-align: center;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+.setShiftSliderBTN {
+  display: inline-block;
+  margin: auto;
+}
+
 .sliderText {
   width: 100%;
   text-align: center;
@@ -131,7 +142,7 @@ h2 {
   border: 3px solid;
 }
 
-button {
+.setFunctionBTN {
   width: 100px;
   height: 30px;
   margin-left: 10px;
@@ -174,7 +185,6 @@ g.tip {
   z-index: 1;
   background-color: white;
   border: solid 1px;
-  width: 140px;
   text-align: center;
   padding: 2px;
 }
@@ -300,6 +310,11 @@ input.range::-ms-fill-upper {
   border: 0;
 }
 
+.setFreqSliderBTN {
+  display: block;
+  margin: auto;
+}
+
 /*-----pagination-----*/
 .center {
   text-align: center;
@@ -345,23 +360,23 @@ background-color: #ddd;
     </div>
     
     <span class="tooltiptext">
-    To conclude this tutorial, in addition to the rectangular function, the shifting theorem is applied to the triangular, sinc and gaussian function.
+    To conclude this tutorial, the Shifting Theorem is additionally illustrated for the triangular, sinc and gaussian function.
     <br><br>
     Here, the multiplication by \(e^{-j\,2\pi ux_0}\) in terms of a sine and cosine component may be observed best for the sinc function because its Fourier transform is the rectangular function. Therefore as \(f(x)\) is being shifted, the operation \(F(u)\cdot e^{-j\,2\pi ux_0}\) essentially becomes \(0\cdot e^{-j\,2\pi ux_0}\) or \(1\cdot e^{-j\,2\pi ux_0}\) and the sine and cosine components can be seen directly. 
     </span>
 </div>
 
 <div id="header-container">
-  <button type="button" onclick="selectFunction('rectangle')">Rectangle</button>
-  <button type="button" onclick="selectFunction('triangle')">Triangle</button>
-  <button type="button" onclick="selectFunction('sinc')">Sinc</button>
-  <button type="button" onclick="selectFunction('gaussian')">Gaussian</button>
+  <button class="setFunctionBTN" type="button" onclick="selectFunction('rectangle')">Rectangle</button>
+  <button class="setFunctionBTN" type="button" onclick="selectFunction('triangle')">Triangle</button>
+  <button class="setFunctionBTN" type="button" onclick="selectFunction('sinc')">Sinc</button>
+  <button class="setFunctionBTN" type="button" onclick="selectFunction('gaussian')">Gaussian</button>
 </div>
 
 <div id="shift-container">
         <fieldset class="range__field">
         <div class="sliderText">Spatial Shift<br>\(x_0=\) <span id="shift-value"></span></div>
-        <input class="range" type="range" min="-2" max="2" value="0" step="any" id="shift-slider" list="snap">
+        <input class="range" type="range" min="-2" max="2" value="0" step="any" id="shift-slider">
         <svg role="presentation" width="100%" height="10">
             <rect class="range__tick" x="0%" y="3" width="1" height="10"></rect>
             <rect class="range__tick" x="25%" y="3" width="1" height="10"></rect>
@@ -378,16 +393,11 @@ background-color: #ddd;
         </svg>
         </fieldset>
         
-        <datalist id="snap">
-          <option value="-1.5">
-          <option value="-1">
-          <option value="-0.5">
-          <option value="0">
-          <option value="0.5">
-          <option value="1">
-          <option value="1.5">
-        </datalist>
-        
+        <div id="CenterShiftSliderBTN">
+            <button class="setShiftSliderBTN" type="button" onclick="setShiftSlider('-1')">\(x_0=\) -1</button>
+            <button class="setShiftSliderBTN" type="button" onclick="setShiftSlider('0')">\(x_0=\) 0</button>
+            <button class="setShiftSliderBTN" type="button" onclick="setShiftSlider('1')">\(x_0=\) 1</button>
+        </div>
 </div>
   
 <div id="content-container">
@@ -419,7 +429,7 @@ background-color: #ddd;
       <div id="slider-container">
         <fieldset class="range__field">
         <div class="sliderText">Frequency<br>\(u=\) <span id="freq-value"></span></div>
-        <input class="range" type="range" min="-8" max="8" value="1" step="any" id="frequency-slider" list="snap-freq">
+        <input class="range" type="range" min="-8" max="8" value="1" step="any" id="frequency-slider">
         <svg role="presentation" width="100%" height="10">
             <rect class="range__tick" x="0%" y="3" width="1" height="10"></rect>
             <rect class="range__tick" x="25%" y="3" width="1" height="10"></rect>
@@ -435,10 +445,7 @@ background-color: #ddd;
             <text class="range__point" x="100%" y="14" text-anchor="end">8 Hz</text>
         </svg>
         </fieldset>       
-        
-        <datalist id="snap-freq">
-          <option value="0">
-        </datalist>
+        <button class="setFreqSliderBTN" type="button" onclick="setFreqSlider()">\(u=\) 0 Hz</button>
     </div>
 </div>
 
@@ -550,6 +557,16 @@ shiftSlider.oninput = function() {
 }
 
 // functions --------------------------------------------------
+function setFreqSlider() {
+  slider.value = "0";
+  slider.oninput();
+}
+
+function setShiftSlider(val) {
+  shiftSlider.value = val;
+  shiftSlider.oninput();
+}
+
 function selectFunction(funcString) {
   currentInput = funcString;
   setInputFunction();

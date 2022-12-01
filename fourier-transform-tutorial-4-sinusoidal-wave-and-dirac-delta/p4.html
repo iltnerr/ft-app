@@ -165,7 +165,6 @@ button {
   z-index: 1;
   background-color: white;
   border: solid 1px;
-  width: 165px;
   text-align: center;
   padding: 2px;
 }
@@ -335,7 +334,7 @@ background-color: #ddd;
 <div id="chapter-container">
     <div id="chapter">
         <h1>Tutorial 4: Sinusoidal Wave and the Dirac Delta</h1>
-        <h2>Putting it all Together: Dirac Delta Functions for Different Sinusoidal Waves.</h2>
+        <h2>Putting it all Together: Dirac Delta Functions for Sinusoidal Waves.</h2>
     </div>
 
     <div id="cont">
@@ -345,15 +344,13 @@ background-color: #ddd;
     <span class="tooltiptext">
     On the final page of this tutorial you may construct different sinusoidal waves \(f(x) = \cos(\omega_0 x - x_0)\) where \(\omega_0 = 2\pi\beta\). Try to produce different (pure) sine and cosine waves or a composition of both by changing the signal frequency \(\beta\) and then shifting the signal by \(x_0\). The Fourier transform of \(f(x)\) is shown below by the Dirac delta functions. Dirac deltas are often depicted with arrows to indicate that they are infinitely high. Here, dots are used to indicate this. 
     <br><br>
-    The Fourier transform of a pure cosine and a pure sine function are given by:
+    The Fourier transform of a pure cosine and a pure sine function is given by:
     <ul>
       <li>\(\mathcal{F}\big(\cos(\omega_0 x) \big) = \pi[\delta (\omega + \omega_0) + \delta (\omega - \omega_0)]\)</li>
       <li>\(\mathcal{F}\big(\sin(\omega_0 x) \big) = j\pi[\delta (\omega + \omega_0) - \delta (\omega - \omega_0)]\)</li>
     </ul>
     
-    Depending on the source and whether the frequency is denoted by \(f\) or \(\omega = 2\pi f\), different notations for the transform pairs can be found. 
-    <br>
-    <u>Note:</u> The scale of the y-axis of \(F(u)\) needs to be adjusted for the factor \(\pi\) and \(j\pi\) according to the transform pairs above.
+    <u>Note:</u> Depending on the source and whether the frequency is denoted by \(f\) or \(\omega = 2\pi f\), different notations for the transform pairs can be found. Furthermore, the scale of the y-axis of \(F(u)\) needs to be adjusted for the factor \(\pi\) and \(j\pi\) according to the transform pairs above.
     </span>
 </div>
 
@@ -380,15 +377,15 @@ background-color: #ddd;
 <div id="content-container">
 
 <div class="plot" id="graph_signal"><!-- graph will be drawn inside this DIV -->
-	  <span class="graph_label" style="width:70px;">\(f(x)\)</span>
+	  <span class="graph_label">\(f(x)\)</span>
 	</div>
 	
 	<div class="plot" id="graph_ft_real"><!-- graph will be drawn inside this DIV -->
-      <span class="graph_label">\(F(u)_{real} \text{  vs. frequency}\)</span>
+      <span class="graph_label">\(F(u)_{real} \)</span>
 	</div>
 	
 	<div class="plot" id="graph_ft_imag"><!-- graph will be drawn inside this DIV -->
-      <span class="graph_label">\(F(u)_{imag} \text{  vs. frequency}\)</span>
+      <span class="graph_label">\(F(u)_{imag} \)</span>
 	</div>
 </div>
   

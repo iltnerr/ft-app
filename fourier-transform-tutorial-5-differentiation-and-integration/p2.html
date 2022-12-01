@@ -174,7 +174,6 @@ button {
   z-index: 1;
   background-color: white;
   border: solid 1px;
-  width: 165px;
   text-align: center;
   padding: 2px;
 }
@@ -352,14 +351,14 @@ background-color: #ddd;
     </div>
     
     <span class="tooltiptext">
-        Now we are going to focus on the differentiation and integration of sine and cosine signals. Therefore, we consider the two functions \(\sin(2\pi\beta x)\) and \(\cos(2\pi\beta x)\). You may choose the function and the mode (<i>Normal, Differentiation</i> or <i>Integration</i>) with the provided buttons. 
+        On this page the focus lies on the differentiation and integration of sine and cosine signals. Therefore, \(f(x)\) is considered to be \(\sin(2\pi\beta x)\) or \(\cos(2\pi\beta x)\). The signal frequency \(\beta\) may be changed with the slider. The function and the mode (<i>Normal, Differentiation</i> or <i>Integration</i>) may be chosen with the provided buttons. 
         <br>
         <u><h4>Normal</h4></u>
         <ul>
           <li>\(f(x) = \sin(2\pi\beta x)\)</li>
           <li>\(f(x) = \cos(2\pi\beta x)\)</li>
         </ul>
-        The Fourier transform of a pure sine wave and a pure cosine wave consists of either two imaginary or two real Dirac delta impulses (see Tutorial 4).
+        The Fourier transform of a pure sine wave or a pure cosine wave consists of either two imaginary or two real Dirac delta impulses (see Tutorial 4).
         <br>
         <u><h4>Integration</h4></u>
         <ul>
@@ -368,10 +367,10 @@ background-color: #ddd;
         </ul>
         Consider the following aspects:
         <ol>
-        <li>Due to the integration, the amplitude of \(f(x)\) <b>decreases</b> with growing frequency.</li>
+        <li>Due to the integration, the amplitude of \(f(x)\) <b>decreases</b> with growing frequency \(\beta\).</li>
         <li>According to the integration property of the Fourier transform, \(F(u)\) has to be <b>divided</b> by \(j\omega\).</li>
         </ol>
-        Therefore, as the amplitude of \(f(x)\) decreases with the frequency, so do the Dirac delta impulses. 
+        Therefore, as the amplitude of \(f(x)\) decreases with growing frequencies, so do the Dirac delta impulses. 
         <br>
         <u>Note:</u> To avoid dividing by zero, the frequency slider is limited to 1 rad/s = \(\frac{1}{2\pi}\) Hz.
         <br>
@@ -382,16 +381,16 @@ background-color: #ddd;
         </ul>
         Consider the following aspects:
         <ol>
-        <li>Due to the differentiation, the amplitude of \(f(x)\) <b>increases</b> with growing frequency. </li>
+        <li>Due to the differentiation, the amplitude of \(f(x)\) <b>increases</b> with growing frequency \(\beta\). </li>
         <li>According to the differentiation property of the Fourier transform, \(F(u)\) has to be <b>multiplied</b> by \(j\omega\).</li>
         </ol>
-        Therefore, as the amplitude of \(f(x)\) increases with the frequency, so do the Dirac delta impulses.        
+        Therefore, as the amplitude of \(f(x)\) increases with growing frequencies, so do the Dirac delta impulses.        
         <br>
         <u>Note:</u> Since the responses of \(f(x)\) and \(F(u)\) increase with growing frequency, the y-axes have to be rescaled accordingly in case of differentiation.
         <u><h4>Summary</h4></u>
         Through integration or differentiation, even functions become odd and odd functions become even. 
         <br>
-        The same is true for the real and imaginary components of \(F(u)\). By integrating or differentiating \(f(x)\), a real-valued Fourier transform becomes imaginary-valued and vice versa. 
+        A similar effect can be observed for the real and imaginary component of \(F(u)\). By integrating or differentiating \(f(x)\), a real-valued Fourier transform becomes imaginary-valued and vice versa. 
     </span>
 </div>
 
@@ -414,15 +413,15 @@ background-color: #ddd;
 <div id="content-container">
 
 <div class="plot" id="graph_signal"><!-- graph will be drawn inside this DIV -->
-	  <span class="graph_label" style="width:70px;">\(f(x)\)</span>
+	  <span class="graph_label">\(f(x)\)</span>
 	</div>
 	
 	<div class="plot" id="graph_ft_real"><!-- graph will be drawn inside this DIV -->
-      <span class="graph_label">\(F(u)_{real} \text{  vs. frequency}\)</span>
+      <span class="graph_label">\(F(u)_{real} \)</span>
 	</div>
 	
 	<div class="plot" id="graph_ft_imag"><!-- graph will be drawn inside this DIV -->
-      <span class="graph_label">\(F(u)_{imag} \text{  vs. frequency}\)</span>
+      <span class="graph_label">\(F(u)_{imag} \)</span>
 	</div>
 </div>
   
