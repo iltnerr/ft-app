@@ -34,7 +34,7 @@ h2 {
 }
 
 #chapter-container{
-  width: 100vw;
+  width: 99vw;
   margin-bottom: 20px;
   padding-top: 80px;
   position: relative;
@@ -92,16 +92,23 @@ h2 {
 
 #content-container {
   height: 70vh;
-  width: 100%; 
+  width: 100%;
 }
 
-#equation-container {
-  width: 60vw;
+#header-container {
+  clear:left;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
   min-width: 500px;
   max-width: 1000px;
+  width: 60vw;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 80px;
+  margin-bottom: 30px;
+  padding-left: 20vw;
+  padding-right: 20vw;
 }
 
 #focus-part {
@@ -134,6 +141,8 @@ g.tip {
 canvas {
   display: block;
   margin: 0 auto;
+  margin-bottom: 50px;
+  margin-top: 20px;
   border: 1px solid;
   /* Width+Positioning is handled via JS*/
 }
@@ -320,7 +329,7 @@ background-color: #ddd;
     </span>
 </div>
 
-<div id="equation-container">   
+<div id="header-container">   
   <img src="../img/tut1-ft-euler.svg" alt="Fourier Transform + Euler's Equation" width="100%">
 </div>
 
@@ -330,11 +339,8 @@ background-color: #ddd;
 <br><br>
 <div id="content-container">
 	<div id="graph_rp" class="plot"><!-- RP graph will be drawn inside this DIV --></div>
-	<br>
 	<canvas id="cosC" height="50" width="1000"></canvas>
-	<br><br><br><br>
     <div id="graph_ip" class="plot"><!-- IP graph will be drawn inside this DIV --></div>
-    <br>
   	<canvas id="sinC" height="50" width="1000"></canvas>
 </div>
 
@@ -475,6 +481,8 @@ function drawCanvas(canvas, evaluateFunction) {
   var ctx = canvas.getContext("2d");
   let value, color, xCoord;
   
+  canvas.height = document.getElementById("graph_rp").clientHeight/3;
+  
   // clear canvas to remove weird artifacts, which probably result from setting line width
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -492,7 +500,7 @@ function drawCanvas(canvas, evaluateFunction) {
     ctx.beginPath();
     ctx.strokeStyle = `rgb(${color}, ${color}, ${color})`;
     ctx.moveTo(xCoord,0);
-    ctx.lineTo(xCoord,50);
+    ctx.lineTo(xCoord,canvas.height);
     ctx.stroke();
   }
 }
@@ -519,7 +527,7 @@ function plotlyOptions() {
   let col = '#ebebeb';
 
   let L = {
-  height: document.getElementById("content-container").clientHeight/3,
+  height: document.getElementById("content-container").clientHeight/4,
   margin: {
     l: 30,
     r: 30,
